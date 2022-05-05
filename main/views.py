@@ -19,7 +19,7 @@ def home(request):
 
 def emotion_check_view(request, query):
         # emot_search = Emotion_Search()
-        emotion_check.main()
+        # emotion_check.main()
         # return render(request, "main/emotion_check.html", {"search_query" : query})
         return HttpResponse(query)
         

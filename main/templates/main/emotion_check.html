@@ -1,0 +1,19 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+Emotion check
+{% endblock %}
+
+{% block content %}
+<h1>Check Reddit's emotions:</h1>
+
+<form method="POST" action="/emotion/" class="form-group">
+    {% csrf_token %}
+    <div class="input-group mb-3">
+          <div class="input-group-prepend">
+          {{emot_search}}
+          <button name="save" type="submit" value="clicked" class="btn btn-success">Search</button>
+          </div>
+    </div>
+</form>
+{% endblock %}

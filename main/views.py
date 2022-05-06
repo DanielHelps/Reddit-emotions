@@ -4,8 +4,8 @@ from .forms import Emotion_Search
 from . import emotion_check
 
 def home(request):
-        emot_search = Emotion_Search(request.GET)
-        if request.GET.get("save_but"):
+        if request.GET.get("search_but"):
+                emot_search = Emotion_Search(request.GET)
                 if emot_search.is_valid():
                         query = emot_search.cleaned_data["search_query"]
                         return HttpResponseRedirect(f"search={query}/", {"search_query" : query})
@@ -13,14 +13,15 @@ def home(request):
                 else:                        
                         return HttpResponse("Problem, go back!")
         else:
+                emot_search = Emotion_Search()
                 return render(request, "main/home.html", {"emot_search": emot_search})
                 
 
 
 def emotion_check_view(request, query):
-        # emot_search = Emotion_Search()
-        # emotion_check.main()
-        # return render(request, "main/emotion_check.html", {"search_query" : query})
-        return HttpResponse(query)
+        emot_search = Emotion_Search()
+        (score, common_subs) = emotion_check.main(query)
+        return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : score, "common_subs": common_subs})
+        # return HttpResponse(score)
         
 

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'debug_toolbar',
+    'crispy_forms',
 
 ]
 
@@ -132,3 +133,5 @@ INTERNAL_IPS = [
     "127.0.0.1",
     # ...
 ]
+
+CRISPY_TEMPLATE_PACK="bootstrap4"

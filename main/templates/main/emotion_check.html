@@ -1,19 +1,16 @@
-{% extends 'main/base.html' %}
+{% extends 'main/home.html' %}
 
 {% block title %}
 Emotion check
 {% endblock %}
 
-{% block content %}
-<h1>Check Reddit's emotions:</h1>
+{% block more_content %}
 
-<form method="POST" action="/emotion/" class="form-group">
-    {% csrf_token %}
-    <div class="input-group mb-3">
-          <div class="input-group-prepend">
-          {{emot_search}}
-          <button name="save" type="submit" value="clicked" class="btn btn-success">Search</button>
-          </div>
-    </div>
-</form>
+    {% if score is not None %}
+        {{score}}
+        {{common_subs}}
+    {% else %}
+        Error, no results found!
+    {% endif %}
+
 {% endblock %}

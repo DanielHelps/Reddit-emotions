@@ -1,16 +1,16 @@
 
 
-def importing():
-    import pickle
-    from typing import Tuple
-    import nltk
-    from nltk.sentiment import SentimentIntensityAnalyzer
-    import re
-    from statistics import mean
-    from .classifier_functions import extract_features
-    from requests.auth import HTTPBasicAuth
-    import requests
-    from collections import Counter
+# def importing():
+import pickle
+from typing import Tuple
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+import re
+from statistics import mean
+from .classifier_functions import extract_features
+from requests.auth import HTTPBasicAuth
+import requests
+from collections import Counter
     
 def import_classifier():
     f = open('classifier.pickle', 'rb')
@@ -20,6 +20,7 @@ def import_classifier():
 
 
 def import_top_100():
+    import pickle
     f = open('top_100_neg.pickle', 'rb')
     top_100_neg = pickle.load(f)
     f.close()
@@ -99,14 +100,15 @@ def get_oauth():
     return headers
 
 
-def main():
+def main(search_query):
     pos_counter = 0
     total_counter = 0
     classifier = import_classifier()
     top_100_neg, top_100_pos = import_top_100()
     sia = SentimentIntensityAnalyzer()
     headers = get_oauth()
-    search_term = input("Please enter search term: ")
+    # search_term = input("Please enter search term: ")
+    search_term = search_query
     sort_type = "top"
     time = "month"
     parameters = {"restrict_sr": False, "limit": 100, "sort": sort_type, "q": search_term, "t": time}
@@ -138,11 +140,15 @@ def main():
         total_counter, pos_counter = classify_text(result, classifier, top_100_neg, top_100_pos, sia,
                                                    total_counter, pos_counter)
 
-    print(f"Positive score: {round(100*pos_counter/total_counter,2)}%")
-    print(f"Most common subreddits (subreddit, number of mentions):")
-    print(common_subreddits)
-    print("")
+    if total_counter != 0:
+        print(f"Positive score: {round(100*pos_counter/total_counter,2)}%")
+        print(f"Most common subreddits (subreddit, number of mentions):")
+        print(common_subreddits)
+        print("")
 
+        return ({round(100*pos_counter/total_counter,2)}, common_subreddits)
+    else:
+        return (None, None)
     # bool = classify_text()
 
 

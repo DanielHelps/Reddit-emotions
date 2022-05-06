@@ -1,19 +1,26 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-Reddit emotions
+    Reddit emotions
 {% endblock %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-<h1>Check Reddit's emotions:</h1>
-
-<form method="GET" action="/" class="form-group">
-    {% csrf_token %}
-    <div class="input-group mb-3">
-          <div class="input-group-prepend">
-          {{emot_search}}
-          <button name="save_but" type="submit" value="clicked" class="btn btn-success">Search</button>
-          </div>
-    </div>
-</form>
+    {% comment %} <form method="GET" action="/" class="form-group">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+            {{emot_search | crispy}}
+            </div>
+            <button name="search_but" type="submit" value="clicked" class="btn btn-success">Search</button>
+        </div>
+    </form> {% endcomment %}
+    
+        <form method="GET" action="/" class="form-inline">
+            {% csrf_token %}
+            {{emot_search | crispy}}
+            <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    
+    {% block more_content %}{% endblock more_content %}
 {% endblock %}

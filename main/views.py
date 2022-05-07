@@ -2,14 +2,18 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import Emotion_Search
 from . import emotion_check
+from .models import SearchQ
 
 def home(request):
         if request.GET.get("search_but"):
                 emot_search = Emotion_Search(request.GET)
                 if emot_search.is_valid():
                         query = emot_search.cleaned_data["search_query"]
+                        t = SearchQ(query=query)
+                        t.save()
+                        if t.user_id is not None:
+                                request.user.SearchQ.add(t)
                         return HttpResponseRedirect(f"search={query}/", {"search_query" : query})
-                        # return HttpResponse("GOOOD")
                 else:                        
                         return HttpResponse("Problem, go back!")
         else:

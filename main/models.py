@@ -1,17 +1,12 @@
 from django.db import models
-import main.emotion_check
+from django.contrib.auth.models import User
 
-# # main.emotion_check.importing()
-import pickle
-# from typing import Tuple
-# import nltk
-# from nltk.sentiment import SentimentIntensityAnalyzer
-# import re
-# from statistics import mean
-# from main.classifier_functions import extract_features
-# from requests.auth import HTTPBasicAuth
-# import requests
-# from collections import Counter
+class SearchQ(models.Model):
+    query = models.CharField(max_length=200)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user', null=True)
+
+    def __str__(self):
+        return self.query
 
     
         

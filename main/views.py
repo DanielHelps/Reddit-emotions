@@ -11,8 +11,8 @@ def home(request):
                         query = emot_search.cleaned_data["search_query"]
                         t = SearchQ(query=query)
                         t.save()
-                        if t.user_id is not None:
-                                request.user.SearchQ.add(t)
+                        if request.user.is_authenticated:
+                                request.user.logged_user.add(t)
                         return HttpResponseRedirect(f"search={query}/", {"search_query" : query})
                 else:                        
                         return HttpResponse("Problem, go back!")
@@ -27,5 +27,15 @@ def emotion_check_view(request, query):
         (score, common_subs) = emotion_check.main(query)
         return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : score, "common_subs": common_subs})
         # return HttpResponse(score)
+        
+
+def search_requests(request):
+        user_id = request.user.id
+        searches = SearchQ.objects.filter(user_id=user_id)
+        rev_searches = list(searches)
+        rev_searches.reverse()
+        return render(request, "main/search_requests.html", {"searches": rev_searches, "username": request.user.username, "logged_in" : request.user.is_authenticated})
+
+        
         
 

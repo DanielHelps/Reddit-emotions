@@ -8,7 +8,7 @@ Emotion check
 
     {% if score is not None %}
         {{score}}
-        {{common_subs}}
+        {% comment %} {{common_subs}} {% endcomment %}
     {% else %}
         Error, no results found!
     {% endif %}

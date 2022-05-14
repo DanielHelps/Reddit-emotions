@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .forms import Emotion_Search
 from . import emotion_check
 from .models import SearchQ
+import datetime
 
 def home(request):
         if request.GET.get("search_but"):
@@ -13,7 +14,7 @@ def home(request):
                         t.save()
                         if request.user.is_authenticated:
                                 request.user.logged_user.add(t)
-                        return HttpResponseRedirect(f"search={query}/", {"search_query" : query})
+                        return HttpResponseRedirect(f"search={query}/{t.id}")
                 else:                        
                         return HttpResponse("Problem, go back!")
         else:
@@ -22,11 +23,17 @@ def home(request):
                 
 
 
-def emotion_check_view(request, query):
+def emotion_check_view(request, query, id):
         emot_search = Emotion_Search()
-        (score, common_subs) = emotion_check.main(query)
-        return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : score, "common_subs": common_subs})
-        # return HttpResponse(score)
+        # (scores, common_subs) = emotion_check.main(query)
+        scores = emotion_check.main(query)
+        search_obj = SearchQ.objects.filter(id=id)[0]
+        for score in scores: search_obj.score = score
+        search_obj.date = datetime.datetime.now()
+        search_obj.save()
+        # return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : score, "common_subs": common_subs})
+        return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : score})
+        
         
 
 def search_requests(request):

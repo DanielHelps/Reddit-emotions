@@ -8,6 +8,9 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
+            user = authenticate(username=request.POST["username"], password=request.POST["password1"])
+            login(request, user)
+
             return redirect("/")
         
     else:

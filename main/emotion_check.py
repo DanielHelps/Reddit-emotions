@@ -11,7 +11,9 @@ from .classifier_functions import extract_features
 from requests.auth import HTTPBasicAuth
 import requests
 from collections import Counter
-    
+import time
+
+
 def import_classifier():
     f = open('classifier.pickle', 'rb')
     classifier = pickle.load(f)
@@ -42,14 +44,14 @@ tuple[int, int]:
     return count, pos_count
 
 
-def get_results(param, headers, subreddit_check=False, past_results=[], specific_sub=None):
+def get_results(param, headers, session, subreddit_check=False, past_results=[], specific_sub=None):
     results = []
     subreddits = []
     if specific_sub is None:
-        res = requests.get("https://oauth.reddit.com/search", param,
+        res = session.get("https://oauth.reddit.com/search", params=param,
                            headers=headers)
     else:
-        res = requests.get(f"https://oauth.reddit.com/r/{specific_sub}/search", param,
+        res = session.get(f"https://oauth.reddit.com/r/{specific_sub}/search", params=param,
                            headers=headers)
     post = res.json()['data']['children']
     after_value = res.json()['data']['after']
@@ -67,7 +69,32 @@ def get_results(param, headers, subreddit_check=False, past_results=[], specific
     else:
         return results, after_value, count
 
+def get_results_pushshift(param, session):
+    
+    # if specific_sub is None:
+    res = session.get("https://api.pushshift.io/reddit/search/submission", params=param)
+    # else:
+        # res = session.get(f"https://oauth.reddit.com/r/{specific_sub}/search", params=param,
+                        #    headers=headers)
+    posts = res.json()
+    titles= [x['title'] for x in posts['data']]
+    # post = res.json()['data']['children']
+    # after_value = res.json()['data']['after']
+    # count = len(titles)
+    # for text in titles:
+    #     # text = result['data']['title']
+    #     if text not in past_results:
+    #         results.append(text)
+    #         if subreddit_check is True:
+    #             subreddits.append(result['data']['subreddit'])
+    # print(f"{int(float(res.headers['x-ratelimit-remaining']))} requests remaining till end of period")
+    # print(f"{res.headers['x-ratelimit-reset']} seconds till period reset")
+    # if subreddit_check is True:
+    #     return results, subreddits, after_value, count
+    # else:
+    return titles
 
+    
 def get_oauth():
     auth = HTTPBasicAuth('vw-fkwBL0vnxGZ5Ofm5VKw', 'ULkWg9VlM0ObIqI1nDdtdVsFsmTG5Q')
     # auth = HTTPBasicAuth('classified', 'classified')
@@ -83,7 +110,6 @@ def get_oauth():
 
     # setup our header info, which gives reddit a brief description of our app
     headers = {'User-Agent': 'sentiment_analysis_bot'}
-
     # send our request for an OAuth token
     res = requests.post('https://www.reddit.com/api/v1/access_token',
                         auth=auth, data=data, headers=headers)
@@ -101,40 +127,60 @@ def get_oauth():
 
 
 def main(search_query):
+    
     pos_counter = 0
     total_counter = 0
     classifier = import_classifier()
     top_100_neg, top_100_pos = import_top_100()
     sia = SentimentIntensityAnalyzer()
     headers = get_oauth()
-    # search_term = input("Please enter search term: ")
     search_term = search_query
     sort_type = "top"
-    time = "month"
-    parameters = {"restrict_sr": False, "limit": 100, "sort": sort_type, "q": search_term, "t": time}
+    time_span = "month"
+    parameters = {"restrict_sr": False, "limit": 100, "sort": sort_type, "q": search_term, "t": time_span}
     results = []
     subreddits = []
     subreddit_check = True
     listing_counter = 0
-    for i in range(0,3):
-        if i == 0:
-            results_add, subreddits_add, after, count = get_results(parameters, headers, subreddit_check, results)
-        else:
-            listing_counter += count
-            parameters = {"restrict_sr": False, "limit": 100, "sort": sort_type, "q": search_term, "after": after,
-                          "count": listing_counter, "t": time}
-            results_add, subreddits_add, after, count = get_results(parameters, headers, subreddit_check, results)
-        results += results_add
-        subreddits += subreddits_add
+    session = requests.Session()
+    
+    import time
+    current_time = int(time.time())
+    month_time = 2592000
+    results = []
+    parameters = {"limit": 1000, "sort": "top", "q": search_query}
+    for i in range(3):
+        parameters.update({"before":(current_time-i*month_time), "after":(current_time-(i+1)*month_time)})
+        results += get_results_pushshift(parameters, session)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # for i in range(0,3):
+    #     if i == 0:
+    #         results_add, subreddits_add, after, count = get_results(parameters, headers, session, subreddit_check, results)
+    #     else:
+    #         listing_counter += count
+    #         parameters = {"restrict_sr": False, "limit": 100, "sort": sort_type, "q": search_term, "after": after,
+    #                     "count": listing_counter, "t": time}
+    #         results_add, subreddits_add, after, count = get_results(parameters, headers, session, subreddit_check, results)
+    #     results += results_add
+    #     subreddits += subreddits_add
 
-    # Adding common subreddits posts
-    common_subreddits = Counter(subreddits).most_common(10)
-    number_of_subs = 3
-    for sub in common_subreddits[0:number_of_subs]:
-        sub_name = sub[0]
-        parameters = {"restrict_sr": True, "limit": 100, "sort": sort_type, "q": search_term, "t": time}
-        results_add, subreddits_add, after, count = get_results(parameters, headers, subreddit_check, results, specific_sub=sub_name)
-        results += results_add
+    # # Adding common subreddits posts
+    # common_subreddits = Counter(subreddits).most_common(10)
+    # number_of_subs = 3
+    # for sub in common_subreddits[0:number_of_subs]:
+    #     sub_name = sub[0]
+    #     parameters = {"restrict_sr": True, "limit": 100, "sort": sort_type, "q": search_term, "t": time}
+    #     results_add, subreddits_add, after, count = get_results(parameters, headers, session, subreddit_check, results, specific_sub=sub_name)
+    #     results += results_add
 
     for result in results:
         total_counter, pos_counter = classify_text(result, classifier, top_100_neg, top_100_pos, sia,
@@ -143,13 +189,14 @@ def main(search_query):
     if total_counter != 0:
         print(f"Positive score: {round(100*pos_counter/total_counter,2)}%")
         print(f"Most common subreddits (subreddit, number of mentions):")
-        print(common_subreddits)
+        # print(common_subreddits)
         print("")
 
-        return ({round(100*pos_counter/total_counter,2)}, common_subreddits)
+        # return ({round(100*pos_counter/total_counter,2)}, common_subreddits)
+        return {round(100*pos_counter/total_counter,2)}
     else:
-        return (None, None)
-    # bool = classify_text()
+        return None
+    
 
 
 if __name__ == '__main__':

@@ -12,7 +12,9 @@ from requests.auth import HTTPBasicAuth
 import requests
 from collections import Counter
 import time
-
+from concurrent.futures import ThreadPoolExecutor
+import asyncio
+import aiohttp
 
 def import_classifier():
     f = open('classifier.pickle', 'rb')
@@ -94,6 +96,12 @@ def get_results_pushshift(param, session):
     # else:
     return titles
 
+async def fetch(session, param):
+    async with session.get("https://api.pushshift.io/reddit/search/submission", params=param) as response:
+        # print(f"{int(float(response.headers['x-ratelimit-remaining']))} requests remaining till end of period")
+        # print(f"{response.headers['x-ratelimit-reset']} seconds till period reset")
+        print("got results")
+        return await response.json()
     
 def get_oauth():
     auth = HTTPBasicAuth('vw-fkwBL0vnxGZ5Ofm5VKw', 'ULkWg9VlM0ObIqI1nDdtdVsFsmTG5Q')
@@ -125,6 +133,26 @@ def get_oauth():
 
     return headers
 
+async def by_aiohttp_concurrency(total, params, current_time, month_time):
+    # use aiohttp
+    titles = []
+    session=aiohttp.ClientSession()
+    tasks = []
+    # url = "https://oauth.reddit.com/search"
+    for i in range(total):
+        params.update({"before":(current_time-i*month_time), "after":(current_time-(i+1)*month_time)})
+        tasks.append(asyncio.create_task(fetch(session, params)))
+
+
+    original_result = await asyncio.gather(*tasks)
+    await session.close()
+    for results_batch in original_result:
+        titles += [x['title'] for x in results_batch['data']]
+    
+    return titles
+    # for res in original_result:
+    #     print(res)
+
 
 def main(search_query):
     
@@ -138,21 +166,26 @@ def main(search_query):
     sort_type = "top"
     time_span = "month"
     parameters = {"restrict_sr": False, "limit": 100, "sort": sort_type, "q": search_term, "t": time_span}
+    start_time = time.time()
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     results = []
     subreddits = []
     subreddit_check = True
     listing_counter = 0
     session = requests.Session()
     
-    import time
+    # import time
     current_time = int(time.time())
     month_time = 2592000
     results = []
-    parameters = {"limit": 1000, "sort": "top", "q": search_query}
-    for i in range(3):
-        parameters.update({"before":(current_time-i*month_time), "after":(current_time-(i+1)*month_time)})
-        results += get_results_pushshift(parameters, session)
-    
+    parameters = {"limit": 100, "sort": "top", "q": search_query}
+    total = 6
+    # for i in range(total):
+        
+        # results += asyncio.run(by_aiohttp_concurrency(total, parameters, headers))
+    results = asyncio.run(by_aiohttp_concurrency(total,parameters,current_time,month_time))
+    print("--- It took %s seconds ---" % (time.time() - start_time))
+
     
     
     

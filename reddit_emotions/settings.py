@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'register.apps.RegisterConfig',
     'debug_toolbar',
     'crispy_forms',
+    'LoveHateGame.apps.LovehategameConfig'
 
 ]
 

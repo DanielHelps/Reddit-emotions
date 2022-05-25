@@ -11,5 +11,10 @@ class SearchQ(models.Model):
     def __str__(self):
         return self.query
 
+class TrainData(models.Model):
+    query = models.CharField(max_length=200)
+    question = models.CharField(max_length=1000)
+    date = models.DateTimeField(null=True)
+    is_positive = models.BooleanField()
     
         

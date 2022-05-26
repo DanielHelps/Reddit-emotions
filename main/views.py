@@ -4,8 +4,11 @@ from .forms import Emotion_Search
 from . import emotion_check
 from .models import SearchQ
 import datetime
+from LoveHateGame import train
+
 
 def home(request):
+        train.train_today()
         if request.GET.get("search_but"):
                 emot_search = Emotion_Search(request.GET)
                 if emot_search.is_valid():

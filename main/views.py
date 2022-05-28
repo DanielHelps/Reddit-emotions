@@ -29,6 +29,11 @@ def home(request):
 def emotion_check_view(request, query, id):
         emot_search = Emotion_Search()
         # (scores, common_subs) = emotion_check.main(query)
+        if len(list(SearchQ.objects.filter(query=query))) > 1:
+                last_search = list(SearchQ.objects.filter(query=query))[len(list(SearchQ.objects.filter(query=query)))-2] 
+                # days_difference = (last_search.date - datetime.datetime.now()).days
+                # if abs(days_difference) < 7:
+                return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : last_search.score})
         scores = emotion_check.main(query)
         search_obj = SearchQ.objects.filter(id=id)[0]
         for score in scores: search_obj.score = score

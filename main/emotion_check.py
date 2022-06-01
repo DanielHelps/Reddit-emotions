@@ -96,6 +96,14 @@ def get_results_pushshift(param, session):
     # else:
     return titles
 
+def get_random_post():
+    headers = get_oauth()
+    res = requests.get("https://oauth.reddit.com/random", headers=headers)
+    post_title = res.json()[0]['data']['children'][0]['data']['title']
+    # *****************
+    return post_title
+    
+    
 async def fetch(session, param):
     async with session.get("https://api.pushshift.io/reddit/search/submission", params=param) as response:
         # print(f"{int(float(response.headers['x-ratelimit-remaining']))} requests remaining till end of period")
@@ -161,7 +169,7 @@ def main(search_query):
     classifier = import_classifier()
     top_100_neg, top_100_pos = import_top_100()
     sia = SentimentIntensityAnalyzer()
-    headers = get_oauth()
+    # headers = get_oauth()
     search_term = search_query
     sort_type = "top"
     time_span = "month"
@@ -172,7 +180,7 @@ def main(search_query):
     subreddits = []
     subreddit_check = True
     listing_counter = 0
-    session = requests.Session()
+    # session = requests.Session()
     
     # import time
     current_time = int(time.time())

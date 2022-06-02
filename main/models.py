@@ -12,11 +12,11 @@ class SearchQ(models.Model):
         return self.query
 
 class TrainData(models.Model):
-    query = models.CharField(max_length=200)
-    question = models.CharField(max_length=1000)
+    post_title = models.CharField(max_length=200)
+    times_answered = models.IntegerField(null=True)
     date = models.DateTimeField(null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='training_user', null=True)
-    is_positive = models.BooleanField()
+    ip = models.GenericIPAddressField(null=True)
+    positive_score = models.IntegerField(null=True)
     
 class ImportantVars(models.Model):
     date = models.DateField()

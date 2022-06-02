@@ -21,6 +21,7 @@
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
           <a class="nav-link active" aria-current="page" href="/">Home</a>          
+          <a class="nav-link" aria-current="page" href="/train">Train</a>          
           {% if request.user.is_authenticated is False %}
           <a class="nav-link" href="/register">Register</a>
           <a class="nav-link" href="/login">Login</a>
@@ -28,8 +29,6 @@
           <a class="nav-link" href="/search requests">{{request.user.username}}</a>
           <a class="nav-link" href="/logout">Logout</a>
           {% endif %}
-          <a class="nav-link" aria-current="page" href="/train">Train</a>          
-          {% comment %} <a class="nav-link" href="/search requests" tabindex="-1">Search requests</a> {% endcomment %}
         </div>
       </div>
     </div>

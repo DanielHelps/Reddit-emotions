@@ -11,12 +11,17 @@ class SearchQ(models.Model):
     def __str__(self):
         return self.query
 
+class TrainIps(models.Model):
+    ip = models.GenericIPAddressField(null=True)
+
+
+
 class TrainData(models.Model):
     post_title = models.CharField(max_length=200)
-    times_answered = models.IntegerField(null=True)
+    times_answered = models.IntegerField(null=True, default=0)
     date = models.DateTimeField(null=True)
-    ip = models.GenericIPAddressField(null=True)
-    positive_score = models.IntegerField(null=True)
+    positive_score = models.IntegerField(null=True, default=0)
+    train_ips = models.ManyToManyField(TrainIps)
     
 class ImportantVars(models.Model):
     date = models.DateField()

@@ -13,9 +13,9 @@
 {% block more_content %}
 <form class="form-group" method="POST">
     {% csrf_token %}
-    <button name="positive" value="clicked" type="submit" class="btn btn-outline-success">Positive</button>
-    <button name="none" value="clicked" type="submit" class="btn btn-outline-secondary">Neutral</button>
-    <button name="negative" value="clicked" type="submit" class="btn btn-outline-danger">Negative</button>
+    <button name="train_button" value="1" type="submit" class="btn btn-outline-success">Positive</button>
+    <button name="train_button" value="0" type="submit" class="btn btn-outline-secondary">Neutral</button>
+    <button name="train_button" value="-1" type="submit" class="btn btn-outline-danger">Negative</button>
 </form>
 {% endblock more_content %}
 {% endblock %}

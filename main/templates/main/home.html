@@ -15,14 +15,15 @@
             <button name="search_but" type="submit" value="clicked" class="btn btn-success">Search</button>
         </div>
     </form> {% endcomment %}
-<div id="search_bar" class="wrapper">    
-        <form  method="GET" action="/" class="form-inline">
+<div id="search_bar" class="form-inline asteriskField"">    
+        <form  method="GET">
             {% csrf_token %}
-            <div class="pr-5">
+            <span class="pr-5">
             {{emot_search | crispy}}
-            </div>
-            <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </span>
+            {% comment %} <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %}
+            <button name="search_but" value="clicked" type="submit" id="btnFetch" class="btn btn-primary mb-2">Search</button>
         </form>
 </div>
-    {% block more_content %}{% endblock more_content %}
+    
 {% endblock %}

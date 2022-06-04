@@ -15,14 +15,14 @@
             <button name="search_but" type="submit" value="clicked" class="btn btn-success">Search</button>
         </div>
     </form> {% endcomment %}
-    
-        <form method="GET" action="/" class="form-inline">
+<div id="search_bar" class="wrapper">    
+        <form  method="GET" action="/" class="form-inline">
             {% csrf_token %}
             <div class="pr-5">
             {{emot_search | crispy}}
             </div>
             <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
-    
+</div>
     {% block more_content %}{% endblock more_content %}
 {% endblock %}

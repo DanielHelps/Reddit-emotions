@@ -19,20 +19,25 @@ def get_client_ip(request):
 def train(request):
     global train_post
     max_answers = 3
-    ip = get_client_ip(request)
+    ip_str = get_client_ip(request)
     if request.method == "POST":
-        # if "positive" in request.POST:
-        post = TrainData.objects.get(post_title=train_post)
+        # if "positive" in requ est.POST:
+        post = TrainData.objects.filter(post_title=train_post)[0]
         post.times_answered += 1
         post.positive_score += int(request.POST.get("train_button"))
-        ip = TrainIps(ip=ip)
-        ip.save()
-        post.train_ips.add(ip)
+        try:
+            ip_obj = TrainIps.objects.get(ip=ip_str)
+        except:
+            ip_obj = TrainIps(ip=ip_str)
+            ip_obj.save()
+        post.train_ips.add(ip_obj)
         post.save()
 
     try:
-        post = TrainData.objects.get(~Q(train_ips=ip), times_answered__lt = max_answers)
-        # *****MISTAKE*********
+        if 'ip_obj' not in locals():
+            ip_obj = TrainIps.objects.get(ip=ip_str)
+        # print(TrainData.train_ips.through.objects.all())
+        post = TrainData.objects.filter(~Q(train_ips=ip_obj), times_answered__lt = max_answers)[0]
     except:
         train_post = get_random_post()
         new_post = TrainData(post_title=train_post, date=datetime.datetime.now())

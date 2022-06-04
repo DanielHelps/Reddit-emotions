@@ -1,0 +1,159 @@
+
+*{
+    /* background-color: rgb(29, 53, 53); */
+    margin:0;
+    padding: 0;
+    /* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
+    font-family: 'Arvo', serif;
+    font-size: 1.1em;
+    
+}
+/* collor pallet */
+/* https://coolors.co/8360c3-2ebf91-ea526f-231123-eff7ff */
+
+body{
+    background-image: linear-gradient(to right, #8360c3, #2ebf91);
+    /* background-image: linear-gradient(to right, #437F97, #FFB30F); */
+    color: #eff7ff;
+    /* margin: 0; */
+}
+
+.some_form{
+    opacity: 0%;
+    animation: comein_left 0.5s ease 0s 1 forwards;
+    margin: auto;
+
+}
+
+.container-fluid{
+    opacity: 0%;
+    animation: appearing 0.2s ease 0.2s 1 forwards;
+}
+#dial{
+    margin: auto;
+    opacity: 0%;
+    animation: appearing 0.8s ease 0.2s 1 forwards;
+}
+
+.tutorial{
+    opacity: 0%;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 3.5em;
+    background-color: #2EBF91;
+    color: #231123;
+    margin: 100px 20px;
+    /* width: 80%; */
+    border: 5px #EA526F;
+    border-style:  inset;
+    /* opacity: 1; */
+    animation: comein_left 0.5s ease 0.4s 1 forwards;
+    
+}
+
+#title{font-style: italic;
+/* font-family: Helvetica; */
+margin-left: 0.5em;
+margin-top: 0.2em;
+opacity: 0;
+/* text-decoration: line-through; */
+animation: appearing 0.5s ease 0s 1 forwards;
+}
+
+.categories{
+    opacity: 0;
+}
+
+.categories:hover{
+    opacity: 1;
+    color: #EA526F
+}
+
+#navbar{
+    /* position: absolute; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    animation: comein_down 0.5s ease 0s 1 forwards;
+}
+
+#search_bar{
+    animation: comein_left 0.5s ease 0s 1 forwards;
+}
+
+.tab{
+    /* position: absolute; */
+    background-color: #231123;
+    color: #EFF7FF;
+    display: flex;
+    /* border: 3px #EA526F; */
+    flex-basis: 7%;
+    height: 100px;
+    /* top: -10px; */
+    align-items: center;
+    justify-content: space-evenly;
+    /* border-radius: 10px; */
+    /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
+    /* background-image: ur; */
+    transition: 0.5s ease;
+    user-select: none;
+}
+
+/* .active{
+    flex-basis: 100%;
+    background-color: #EA526F;
+    color: #EFF7FF;
+    font-size: 3em;
+    transition: 0.5s ease;
+
+} */
+
+
+.wrapper {
+	/* position: absolute; */
+	/* width: 400px; */
+	/* height: 10%; */
+	margin: auto;
+	top: 10%;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	flex-direction: row;
+}
+
+/* .container {
+	
+	padding: 1% 0%;
+} */
+
+
+@keyframes comein_left {
+    from {transform: translateX(-10em);
+        opacity: 0%
+        ;
+    /* transform: rotate(180deg);} */}
+    to {
+        opacity: 100%}
+        /* transform: rotate(0deg)} */
+}
+
+@keyframes appearing {
+    from {
+        opacity: 0%
+        ;
+    /* transform: rotate(180deg);} */}
+    to {
+        opacity: 100%}
+        /* transform: rotate(0deg)} */
+}
+
+@keyframes comein_down {
+    from {transform: translateY(-10em);
+        opacity: 0%
+        ;
+    /* transform: rotate(180deg);} */}
+    to {
+        opacity: 100%}
+        /* transform: rotate(0deg)} */
+}

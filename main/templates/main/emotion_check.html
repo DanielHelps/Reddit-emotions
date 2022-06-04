@@ -8,6 +8,8 @@ Emotion check
 
     {% if score is not None %}
         {{score}}
+        <div class="container chart" id="dial" data-size="400" data-value="{{score}}" data-arrow="up">
+        </div>
         {% comment %} {{common_subs}} {% endcomment %}
     {% else %}
         Error, no results found!

@@ -1,15 +1,22 @@
-$(document).ready(function() {
+$(function(){
     $("#loading_status").html(
         `<button name="search_but" value="clicked" type="submit" id="btnFetch" class="btn btn-primary mb-2" enabled>Search</button>`);
 
+
     $("#btnFetch").click(function() {
-      // disable button
+        // disable button
       // $(this).prop("disabled", true);
       // add spinner to button
-      $(this).html(
-        `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id="loading_status"></span>
-  Loading...`
-      );
+      
+      // alert($("#id_search_query").val())
+
+      if ($("#id_search_query").val() != ""){
+        $(this).html(
+          `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id="loading_status"></span>
+    Loading...`
+        );
+      }
+      
       
     //   let dial_value = $("#inputTopic").val();
     //   $("#dial").attr("data-value",dial_value);
@@ -25,10 +32,10 @@ $(document).ready(function() {
 
     $('.tab').on('click', function(){
       // let $nav = $('#navbar');
+      alert($this.html())
       $clicked_panel = $(this);
       //make current tab inactive
-      var $current_panel = $('.tab.active');
-      // alert($clicked_panel.attr('id'))
+      let $current_panel = $('.tab.active');
       $current_panel.removeClass('active')
       //make clicked tab active
       $clicked_panel.addClass('active')

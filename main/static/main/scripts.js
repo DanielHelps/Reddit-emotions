@@ -1,19 +1,22 @@
 $(document).ready(function() {
+    $("#loading_status").html(
+        `<button name="search_but" value="clicked" type="submit" id="btnFetch" class="btn btn-primary mb-2" enabled>Search</button>`);
+
     $("#btnFetch").click(function() {
       // disable button
       // $(this).prop("disabled", true);
       // add spinner to button
       $(this).html(
-        `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id="loading_status"></span>
   Loading...`
       );
       
-      let dial_value = $("#inputTopic").val();
-      $("#dial").attr("data-value",dial_value);
-      containers = document.getElementsByClassName("chart");
-      dial = new Dial(containers[0]);
-      $(".chart>svg:first-child").remove();
-      dial.animateStart();
+    //   let dial_value = $("#inputTopic").val();
+    //   $("#dial").attr("data-value",dial_value);
+    //   containers = document.getElementsByClassName("chart");
+    //   dial = new Dial(containers[0]);
+    //   $(".chart>svg:first-child").remove();
+    //   dial.animateStart();
       
       // alert($("#dial").attr("data-value"))
       // window.location.reload();

@@ -5,7 +5,7 @@
     padding: 0;
     /* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
     font-family: 'Arvo', serif;
-    font-size: 1.1em;
+    /* font-size: 1.1em; */
     
 }
 /* collor pallet */
@@ -30,6 +30,9 @@ body{
     animation: appearing 0.2s ease 0.2s 1 forwards;
 }
 #dial{
+    /* max-width: 80px; */
+    position: relative;
+    top: 10%;
     margin: auto;
     opacity: 0%;
     animation: appearing 0.8s ease 0.2s 1 forwards;
@@ -70,14 +73,20 @@ animation: appearing 0.5s ease 0s 1 forwards;
 }
 
 #navbar{
-    /* position: absolute; */
+    /* position: fixed; */
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     animation: comein_down 0.5s ease 0s 1 forwards;
 }
 
+.asteriskField {
+    display: none;
+}
+
 #search_bar{
+    width: 20%;
+    margin: auto;
     animation: comein_left 0.5s ease 0s 1 forwards;
 }
 
@@ -110,22 +119,18 @@ animation: appearing 0.5s ease 0s 1 forwards;
 
 
 .wrapper {
-	/* position: absolute; */
+	position: absolute;
 	/* width: 400px; */
 	/* height: 10%; */
 	margin: auto;
 	top: 10%;
 	bottom: 0;
-	left: 0;
+	left: 50%;
 	right: 0;
-	display: flex;
-	flex-direction: row;
+	/* display: flex;
+	flex-direction: row; */
 }
 
-/* .container {
-	
-	padding: 1% 0%;
-} */
 
 
 @keyframes comein_left {

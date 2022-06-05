@@ -3,6 +3,8 @@
 {% block title %}
     Reddit emotions
 {% endblock %}
+
+
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -22,7 +24,7 @@
             {{emot_search | crispy}}
             </span>
             {% comment %} <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %}
-            <button name="search_but" value="clicked" type="submit" id="btnFetch" class="btn btn-primary mb-2">Search</button>
+            <button name="search_but" value="clicked" type="submit" class="btn btn-primary mb-2 btnFetch">Search</button>
         </form>
 </div>
     

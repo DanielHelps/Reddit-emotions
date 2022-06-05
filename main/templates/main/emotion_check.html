@@ -1,21 +1,23 @@
 {% extends 'main/home.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %}
 Emotion check
 {% endblock %}
 
-
+{% block head %}
+<script type='text/javascript' src="{% static 'main/dial_script.js' %}"></script>
+{% endblock head %}
 {% block content %}
 {% comment %} <div id="search_bar" class="wrapper">     {% endcomment %}
 
-<form id="search_bar" method="GET" class=" form-inline">
+<form id="search_bar" method="GET" action="/" class=" form-inline">
     {% csrf_token %}
     <div class="pr-5">
-    {{emot_search | crispy}}
+        {{emot_search | crispy}}
     </div>
-    
-    <button name="search_but" value="clicked" type="submit" id="btnFetch" class="btn btn-primary mb-2">Search</button>
+    <button name="search_but" value="clicked" type="submit"  class="btn btn-primary mb-2 btnFetch">Search</button>
 </form>
 {% comment %} </div> {% endcomment %}
 {% endblock content %}
@@ -25,11 +27,13 @@ Emotion check
 
     {% if score is not None %}
         {% comment %} {{score}} {% endcomment %}
+        
         <div class="container chart" id="dial" data-size="350" data-value="{{score}}" data-arrow="up">
         </div>
         {% comment %} {{common_subs}} {% endcomment %}
     {% else %}
         Error, no results found!
     {% endif %}
+
 
 {% endblock %}

@@ -97,7 +97,7 @@ animation: appearing 0.5s ease 0s 1 forwards;
     display: flex;
     /* border: 3px #EA526F; */
     flex-basis: 7%;
-    height: 100px;
+    height: 40px;
     /* top: -10px; */
     align-items: center;
     justify-content: space-evenly;

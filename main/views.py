@@ -8,13 +8,8 @@ from .models import ImportantVars
 import datetime
 from LoveHateGame import train
 
-def home(request):
-        # try:
-                # if last_trained_date == 
-                
-        # except NameError:
-        # print(get_random_post())
-        
+
+def check_today_training():
         try:
                 train_date = ImportantVars.objects.filter(purpose="last_trained_date")[0]
         except IndexError:
@@ -27,6 +22,15 @@ def home(request):
                         train_date.save()
                         train.train_today()
                
+
+def home(request):
+        # try:
+                # if last_trained_date == 
+                
+        # except NameError:
+        # print(get_random_post())
+        
+        check_today_training()
         
         if request.GET.get("search_but"):
                 emot_search = Emotion_Search(request.GET)

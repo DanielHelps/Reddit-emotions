@@ -18,10 +18,13 @@ class TrainIps(models.Model):
 
 class TrainData(models.Model):
     post_title = models.CharField(max_length=200)
+    author = models.CharField(null=True, max_length=200)
+    subreddit = models.CharField(null=True, max_length=200)
     times_answered = models.IntegerField(null=True, default=0)
     date = models.DateTimeField(null=True)
     positive_score = models.IntegerField(null=True, default=0)
     train_ips = models.ManyToManyField(TrainIps)
+    
     
 class ImportantVars(models.Model):
     date = models.DateField()

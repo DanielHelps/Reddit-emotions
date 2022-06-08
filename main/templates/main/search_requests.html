@@ -6,21 +6,31 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<span class="grid-container">
+    <span class="centralized-item">
+        
 {% if logged_in is True %}
-    <ol class="list-group list-group-numbered">
-        Hello {{username}}, these are your previous searches:
-        {% for search in searches %}
-        <li class="list-group-item d-flex justify-content-between align-items-start">
-            <div class="ms-2 me-auto">
-            <div class="fw-bold">{{search.query}}</div>
-            {{search.date}}
-            </div>
-            <span class="badge bg-primary rounded-pill">Score: {{search.score}}</span>
-        </li>
-        {% endfor %}
-    </ol>
+
+        <ol class="list-group list-group-numbered">
+            Hello {{username}}, these are your previous searches:
+            {% for search in searches %}
+            
+                    <li class="list-group-item d-flex justify-content-between align-items-start bg-transparent">
+                        <div class="ms-2 me-auto">
+                        <div class="fw-bold">{{search.query}}</div>
+                        {{search.date}}
+                        </div>
+                        <span class="badge bg-primary rounded-pill">Score: {{search.score}}</span>
+                    </li>    
+                
+            {% endfor %}
+        </ol>
+    
 {% else %}
+
         You are not logged in, please log in to view your previous results
 {% endif %}
+</span>
+</span>
     {% block more_content %}{% endblock more_content %}
 {% endblock %}

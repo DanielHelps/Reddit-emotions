@@ -17,15 +17,35 @@
             <button name="search_but" type="submit" value="clicked" class="btn btn-success">Search</button>
         </div>
     </form> {% endcomment %}
-<div id="search_bar" class="form-inline">    
-        <form  method="GET">
-            {% csrf_token %}
-            <span class="pr-5">
-            {{emot_search | crispy}}
+<div class="grid-container">
+    <div class="search-item">   
+        <div id="search_bar">
+            <span class="min_width_elem">
+                <form  method="GET">
+                    {% csrf_token %}
+                    {% comment %} <span class="pr-5"> {% endcomment %}
+                    {{emot_search | crispy}}
+                    {% comment %} </span> {% endcomment %}
+                    {% comment %} <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %}
+                    <button name="search_but" value="clicked" type="submit" class="btn btn-primary mb-2 btnFetch">Search</button>
+                </form>
+                <span style="font-size: 20px;">How does it work?</span>  
             </span>
-            {% comment %} <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %}
-            <button name="search_but" value="clicked" type="submit" class="btn btn-primary mb-2 btnFetch">Search</button>
-        </form>
-</div>
+        </div>
+    </div>
+    <div class="grid-item"> </div>
+    <div class="grid-item"> </div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"> </div>
+    <div class="grid-item"> </div>
+    <div class="grid-item"> </div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
     
+    <div class="grid-explain">How does it work?</div>
+
+
+</div>
+
 {% endblock %}

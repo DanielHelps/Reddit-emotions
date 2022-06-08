@@ -100,8 +100,10 @@ def get_random_post():
     headers = get_oauth()
     res = requests.get("https://oauth.reddit.com/random", headers=headers)
     post_title = res.json()[0]['data']['children'][0]['data']['title']
+    author = res.json()[0]['data']['children'][0]['data']['author']
+    subreddit = res.json()[0]['data']['children'][0]['data']['subreddit_name_prefixed']
     # *****************
-    return post_title
+    return post_title, author, subreddit
     
     
 async def fetch(session, param):

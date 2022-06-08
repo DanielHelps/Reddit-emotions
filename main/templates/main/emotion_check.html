@@ -11,24 +11,31 @@ Emotion check
 {% endblock head %}
 {% block content %}
 {% comment %} <div id="search_bar" class="wrapper">     {% endcomment %}
-
-<form id="search_bar" method="GET" action="/" class=" form-inline">
-    {% csrf_token %}
-    <div class="pr-5">
-        {{emot_search | crispy}}
+    <div class="grid-container">
+        <div class="search-item">  
+            <div id="search_bar">
+                <form method="GET" action="/" class=" form-inline">
+                    {% csrf_token %}
+                    <div class="pr-5">
+                        {{emot_search | crispy}}
+                    </div>
+                    <button name="search_but" value="clicked" type="submit"  class="btn btn-primary mb-2 btnFetch">Search</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <button name="search_but" value="clicked" type="submit"  class="btn btn-primary mb-2 btnFetch">Search</button>
-</form>
-{% comment %} </div> {% endcomment %}
 {% endblock content %}
 
 
 {% block more_content %}
-
+    <br>
     {% if score is not None %}
         {% comment %} {{score}} {% endcomment %}
-        
-        <div class="container chart" id="dial" data-size="350" data-value="{{score}}" data-arrow="up">
+        <span class="grid-container">
+            <span class="centralized-item">
+                <div class="container chart" id="dial" data-size="300" data-value="{{score}}" data-arrow="up">
+                </div>
+            </span>
         </div>
         {% comment %} {{common_subs}} {% endcomment %}
     {% else %}

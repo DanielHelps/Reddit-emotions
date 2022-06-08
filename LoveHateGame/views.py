@@ -39,12 +39,15 @@ def train(request):
         # print(TrainData.train_ips.through.objects.all())
         post = TrainData.objects.filter(~Q(train_ips=ip_obj), times_answered__lt = max_answers)[0]
     except:
-        train_post = get_random_post()
-        new_post = TrainData(post_title=train_post, date=datetime.datetime.now())
+        train_post, author, subreddit = get_random_post()
+        new_post = TrainData(post_title=train_post, author=author, subreddit=subreddit, date=datetime.datetime.now())
         new_post.save()
     else:
         train_post = post.post_title
+        author = post.author
+        subreddit = post.subreddit
         
-    return render(request, "LoveHateGame/train.html", {"post_title": train_post})
+        
+    return render(request, "LoveHateGame/train.html", {"post_title": train_post, "author":author, "subreddit":subreddit})
         
     

@@ -134,7 +134,7 @@ Dial.prototype.animateStart = function() {
   var self = this;
   var intervalOne = setInterval(function() {
       var p = +(v / self.value).toFixed(2);
-      var start_speed = 2.5
+      var start_speed = 1
       var final_speed = 0.08
       var a = (p < 0.95) ? start_speed*(1 - p) : final_speed;
       // this.slice.setAttribute('stroke', 'url(#gradient)');

@@ -3,19 +3,38 @@
 {% block title %}
     Reddit emotions 
 {% endblock %}
+{% block head %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'LoveHateGame/train.css' %}" type="text/css" media="screen">
+{% endblock head %}
 {% load crispy_forms_tags %}
 
 {% block content %}
-{{post_title}}
-<br>
-<br>
-<br>
-{% block more_content %}
-<form class="form-group" method="POST">
-    {% csrf_token %}
-    <button name="train_button" value="1" type="submit" class="btn btn-outline-success">Positive</button>
-    <button name="train_button" value="-1" type="submit" class="btn btn-outline-danger">Negative</button>
-    <button name="train_button" value="0" type="submit" class="btn btn-outline-secondary">Neither</button>
-</form>
-{% endblock more_content %}
+<!-- <span class="grid-container">
+    <span class="centralized-item"> -->
+        <div id="content">
+            <div class="testimonial">
+                <blockquote>
+                    {{post_title}}
+                </blockquote>
+                <div></div>
+                <p>
+                    {{author}} &mdash; {{subreddit}}
+                </p>
+            </div>
+        </div>
+    <!-- </span> -->
+<!-- </span> -->
 {% endblock %}
+{% block more_content %}
+<span class="grid-container">
+    <span class="centralized-item">
+        <form class="form-group" method="POST">
+            {% csrf_token %}
+            <button name="train_button" value="1" type="submit" class="btn btn-success">Positive</button>
+            <button name="train_button" value="-1" type="submit" class="btn btn-danger">Negative</button>
+            <button name="train_button" value="0" type="submit" class="btn btn-secondary">Neither</button>
+        </form>
+    </span>
+</span>
+{% endblock more_content %}

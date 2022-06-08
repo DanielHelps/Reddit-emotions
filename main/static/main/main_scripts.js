@@ -1,20 +1,28 @@
 $(function(){
-    // $("#loading_status").html(
-    //     `<button name="search_but" value="clicked" type="submit" class="btn btn-primary mb-2 btnFetch" enabled>Search</button>`);
-    // alert("hello")
-    
+    // alert($("#search_bar").html())
+    var windows_hash = {
+      "/": "#home_panel",
+      "/train": "#train_panel",
+      "/search%20requests": "#username_panel",
+      "/register/": "#register_panel",
+      "/login/": "#login_panel"
+    };
+    active_panel_id = windows_hash[window.location.pathname];
+    let current_panel = $(active_panel_id);
+    $("#home_panel").removeClass('active');
+    current_panel.addClass('active');
 
-    $('.nav-link').click(function(){
-        // alert($this.html())
+    // $('.nav-link').click(function(){
+    //     // alert($this.html())
         
-        let $clicked_panel = $(this);
-        // //make current tab inactive
-        let $current_panel = $('.nav-link.active');
-        $current_panel.removeClass('active')
-        // //make clicked tab active
-        $clicked_panel.addClass('active')
-        alert("hello")
-    });
+        
+    //     // //make current tab inactive
+    //     let $current_panel = $('.nav-link.active');
+    //     $current_panel.removeClass('active')
+    //     // //make clicked tab active
+    //     $clicked_panel.addClass('active')
+    //     // alert($clicked_panel.html())
+    // });
 
     $(".btnFetch").click(function() {
       

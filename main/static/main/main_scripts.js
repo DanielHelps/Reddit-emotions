@@ -18,11 +18,11 @@ $(function(){
 
     $(window).scroll(function() {
       // explain_pos = $("#explanation").offset().top
-      // $("#offset_trial").html(window.pageYOffset)
-      // $("#offset_trial2").html(explain_pos)
+      // $("#offset_trial").html(window.innerHeight)
+      // $("#offset_trial2").html(document.body.offsetHeight)
       var y = window.pageYOffset;
       
-      if (y+2 >= explain_pos) {
+      if ((y+2 >= explain_pos) ||  (window.innerHeight + window.scrollY) >= (document.body.offsetHeight) ) {
         // alert("nicee")
         // $('#explanation').css('opacity') = '1';;
         $("#explanation").addClass('appear');
@@ -36,7 +36,7 @@ $(function(){
       if ($("#id_search_query").val() != ""){
         $(this).html(
           `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id="loading_status"></span>
-    Loading...`
+    Calculating...`
         );
       }
     });

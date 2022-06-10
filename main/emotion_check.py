@@ -79,7 +79,8 @@ def get_results_pushshift(param, session):
         # res = session.get(f"https://oauth.reddit.com/r/{specific_sub}/search", params=param,
                         #    headers=headers)
     posts = res.json()
-    titles= [x['title'] for x in posts['data']]
+    titles = [x['title'] for x in posts['data']]
+    
     # post = res.json()['data']['children']
     # after_value = res.json()['data']['after']
     # count = len(titles)
@@ -150,7 +151,9 @@ async def by_aiohttp_concurrency(total, params, current_time, month_time):
     tasks = []
     # url = "https://oauth.reddit.com/search"
     for i in range(total):
-        params.update({"before":(current_time-i*month_time), "after":(current_time-(i+1)*month_time)})
+        start_time = (current_time-(4*i+1)*month_time)
+        end_time = (current_time-4*i*month_time)
+        params.update({"before":end_time, "after":start_time})
         tasks.append(asyncio.create_task(fetch(session, params)))
 
 
@@ -158,7 +161,7 @@ async def by_aiohttp_concurrency(total, params, current_time, month_time):
     await session.close()
     for results_batch in original_result:
         titles += [x['title'] for x in results_batch['data']]
-    
+    # titles = list(set(titles))
     return titles
     # for res in original_result:
     #     print(res)
@@ -189,7 +192,7 @@ def main(search_query):
     month_time = 2592000
     results = []
     parameters = {"limit": 100, "sort": "top", "q": search_query}
-    total = 6
+    total = 10
     # for i in range(total):
         
         # results += asyncio.run(by_aiohttp_concurrency(total, parameters, headers))

@@ -126,6 +126,7 @@ body{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    width: 100%;
     animation: comein_down 0.3s ease 0s 1 forwards;
 }
 
@@ -158,6 +159,7 @@ body{
 .appear {
   animation: appearing 0.8s ease 0.2s 1 forwards;
 }
+
 @keyframes comein_left {
     from {transform: translateX(-10em);
         opacity: 0%

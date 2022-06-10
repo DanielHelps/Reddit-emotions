@@ -9,8 +9,8 @@ Emotion check
 {% block head %}
 <script type='text/javascript' src="{% static 'main/dial_script.js' %}"></script>
 {% endblock head %}
-{% block content %}
-{% comment %} <div id="search_bar" class="wrapper">     {% endcomment %}
+<!-- {% block content %}
+
     <div class="grid-container">
         <div class="search-item">  
             <div id="search_bar">
@@ -24,10 +24,10 @@ Emotion check
             </div>
         </div>
     </div>
-{% endblock content %}
+{% endblock content %} -->
 
-
-{% block more_content %}
+<!-- {% comment %} <div id="search_bar" class="wrapper">     {% endcomment %} -->
+{% block content_2 %}
     <br>
     {% if score is not None %}
         {% comment %} {{score}} {% endcomment %}
@@ -43,4 +43,4 @@ Emotion check
     {% endif %}
 
 
-{% endblock %}
+{% endblock content_2 %}

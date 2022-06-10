@@ -8,7 +8,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    {% comment %} <form method="GET" action="/" class="form-group">
+    <!-- {% comment %} <form method="GET" action="/" class="form-group">
         {% csrf_token %}
         <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -16,77 +16,84 @@
             </div>
             <button name="search_but" type="submit" value="clicked" class="btn btn-success">Search</button>
         </div>
-    </form> {% endcomment %}
-<div class="grid-container">
-    <div class="search-item">   
-        <div id="search_bar">
-            <span class="min_width_elem">
-                <form  method="GET">
-                    {% csrf_token %}
-                    {% comment %} <span class="pr-5"> {% endcomment %}
-                    {{emot_search | crispy}}
-                    {% comment %} </span> {% endcomment %}
-                    {% comment %} <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %}
-                    <button name="search_but" value="clicked" type="submit" class="btn btn-primary mb-2 btnFetch">Search</button>
-                </form>
-                <br>
-                <!-- <span style="font-size: 20px;">How does it work?</span>   -->
-                <span id="explain_button">
-                    <button type="button" class="btn btn-info btn-sm"><a href="#explanation">How does it work?</a></button>
+    </form> {% endcomment %} -->
+
+    <div class="grid-container">
+        <div class="search-item">   
+            <div id="search_bar">
+                <span class="min_width_elem">
+                    <form  method="GET">
+                        {% csrf_token %}
+                        <!-- {% comment %} <span class="pr-5"> {% endcomment %} -->
+                        {{emot_search | crispy}}
+                        <!-- {% comment %} </span> {% endcomment %} -->
+                        <!-- {% comment %} <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %} -->
+                        <button name="search_but" value="clicked" type="submit" class="btn btn-primary mb-2 btnFetch">Search</button>
+                    </form>
+                    <br>
+                    <!-- <span style="font-size: 20px;">How does it work?</span>   -->
+                    <span id="explain_button">
+                        <button type="button" class="btn btn-info btn-sm"><a href="#explanation">How does it work?</a></button>
+                    </span>
                 </span>
-            </span>
+            </div>
         </div>
     </div>
-    <div id="offset_trial" style="position:fixed"> blaah<br></div>
-    <div id="offset_trial2" style="top:100px"> blaah</div>
-    <div class="grid-item"> </div>
-    <div class="grid-item"></div>
-    <div class="grid-item"></div>
-    <div class="grid-item"> </div>
-    <div class="grid-item"> </div>
-    <div class="grid-item"> </div>
-    <div class="grid-item"></div>
-    <div class="grid-item"></div>
-    <div class="grid-item"> </div>
-    <div class="grid-item"> </div>
-    <div class="grid-item"></div>
-    <div class="grid-item"></div>
-    <div class="grid-item"> </div>
-    <div class="grid-item"> </div>
-    <div class="grid-item"></div>
-    <div class="grid-item"></div>
-    
-    <div id="explanation" class="grid-explain">
-        <h2>What's happening here?</h2>
-        <p>
-            Reddit emotions is a website that shows the feelings of reddit towards different subjects.<br>
-            For a selected search term, an advanced machine learning algorithm calculates the "positivity score", 
-            based on hundreds of search results for this term.<br>
-            Each result is given a score to indicate how positive (or negative) it is, and all the scores are 
-            aggregated, where a weighted final score is given to the search term. 
-        </p>
-        <h2>What's this train button?</h2>
-        <p>
-            The train button allows you to help improve the algorithm! By indicating random results to be
-            positive or negative (or neither), you can help train the algorithm further and improve its future scoring.<br>
-            Go ahead and try it!
-        </p>
-        <h2>Should I register? What's the deal with that?</h2>
-        <p>
-            As a logged user, you will be able see past searches you performed and their scores.<br>
-            I will also add more benefits to registered users, that will apply retroactively, so registering
-            now can actually benefit you in the future :)
-        </p>
-        <h2>Is this an open-source project?</h2>
-        <p>
-            Yes, this is an open source project. I uploaded the entire code to Github, so feel free to use
-            any part of the code (just remember to give credit).<br>
-            You can find the code by pressing the cute cat icon on the top right corner of the screen. <br><br>
-            <a href="https://github.com/DanielHelps/Reddit-emotions">
-                <img alt="Github repository" src="{% static 'main/GitHub-Mark-64px.png' %}">
-            </a>
-        </p>
-    </div>
-</div>
 
-{% endblock %}
+{% endblock content %}
+
+{% block content_3 %}
+    <div class="grid-container">
+        <!-- <div id="offset_trial" style="position:fixed"> blaah<br></div>
+        <div id="offset_trial2" style="top:100px"> blaah</div> -->
+        <div class="grid-item"> </div>
+        <div class="grid-item"></div>
+        <div class="grid-item"> </div>
+        <div class="grid-item"> </div>
+        <div class="grid-item"> </div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"> </div>
+        <div class="grid-item"> </div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"> </div>
+        <div class="grid-item"> </div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        
+        <div id="explanation" class="grid-explain">
+            <h2>What's happening here?</h2>
+            <p>
+                Reddit emotions is a website that shows the feelings of reddit towards different subjects.<br>
+                For a selected search term, an advanced machine learning algorithm calculates the "positivity score", 
+                based on hundreds of search results for this term.<br>
+                Each result is given a score to indicate how positive (or negative) it is, and all the scores are 
+                aggregated, where a weighted final score is given to the search term. 
+            </p>
+            <h2>What's this train button?</h2>
+            <p>
+                The train button allows you to help improve the algorithm! By indicating random results to be
+                positive or negative (or neither), you can help train the algorithm further and improve its future scoring.<br>
+                Go ahead and try it!
+            </p>
+            <h2>Should I register? What's the deal with that?</h2>
+            <p>
+                As a logged user, you will be able see past searches you performed and their scores.<br>
+                I will also add more benefits to registered users, that will apply retroactively, so registering
+                now can actually benefit you in the future :)
+            </p>
+            <h2>Is this an open-source project?</h2>
+            <p>
+                Yes, this is an open source project. I uploaded the entire code to Github, so feel free to use
+                any part of the code (just remember to give credit).<br>
+                You can find the code by pressing the cute cat icon down below. <br><br>
+                <a href="https://github.com/DanielHelps/Reddit-emotions">
+                    <img alt="Github repository" src="{% static 'main/GitHub-Mark-64px.png' %}">
+                </a>
+            </p>
+        </div>
+    </div>
+{% endblock content_3 %}
+    
+

@@ -160,6 +160,10 @@ body{
   animation: appearing 0.8s ease 0.2s 1 forwards;
 }
 
+#cute_cat:hover{
+  filter: opacity(50%);
+}
+
 @keyframes comein_left {
     from {transform: translateX(-10em);
         opacity: 0%

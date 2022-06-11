@@ -42,5 +42,18 @@ Emotion check
         Error, no results found!
     {% endif %}
 
+{% for sentence in positives %}
+  positive sentence: 
+  {{sentence.0}}
+  {{sentence.1}}
+    <br>
+{% endfor %}
+
+{% for sentence in negatives %}
+  negative sentence: 
+  {{sentence.0}}
+  {{sentence.1}}
+    <br>
+{% endfor %}
 
 {% endblock content_2 %}

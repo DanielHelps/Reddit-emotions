@@ -15,6 +15,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
 import aiohttp
+import operator
 
 def import_classifier():
     f = open('classifier.pickle', 'rb')
@@ -33,8 +34,25 @@ def import_top_100():
     f.close()
     return top_100_neg, top_100_pos
 
+def check_sentence_list(method: str, sentence_list: list, sentence: tuple):
+    if len(sentence_list) < 3:
+        sentence_list.append(sentence)
+    else:
+        if method == "positive":
+            least_pos_sentence = min(sentence_list,key=operator.itemgetter(1))
+            if sentence[1] > least_pos_sentence[1]:
+                sentence_list.remove(least_pos_sentence)
+                sentence_list.append(sentence)
+        else:
+            least_neg_sentence = max(sentence_list,key=operator.itemgetter(1))
+            if sentence[1] < least_neg_sentence[1]:
+                sentence_list.remove(least_neg_sentence)
+                sentence_list.append(sentence)
+        
+    return sentence_list
 
-def classify_text(text: str, classifier, top_100_neg: list, top_100_pos: list, sia, count: int, pos_count: int) -> \
+
+def classify_text(text: str, classifier, top_100_neg: list, top_100_pos: list, sia, count: int, pos_count: int, most_positive: list, most_negative: list) -> \
 tuple[int, int]:
     features = extract_features(text, top_100_pos, top_100_neg, sia)
     if abs(features["mean_compound"]) > 0.5:
@@ -43,7 +61,11 @@ tuple[int, int]:
         count += 1
         if features["mean_compound"] > 0 or features["mean_positive"] > 0.2:
             pos_count += 1
-    return count, pos_count
+    check_sentence_list("positive",most_positive,(text, features["mean_compound"]))
+    check_sentence_list("negative",most_negative,(text, features["mean_compound"]))
+    pass
+    # if len(most_positive) < 3 or features["mean_compound"] > min()
+    return count, pos_count, most_positive, most_negative
 
 
 def get_results(param, headers, session, subreddit_check=False, past_results=[], specific_sub=None):
@@ -161,7 +183,7 @@ async def by_aiohttp_concurrency(total, params, current_time, month_time):
     await session.close()
     for results_batch in original_result:
         titles += [x['title'] for x in results_batch['data']]
-    # titles = list(set(titles))
+    titles = list(set(titles))
     return titles
     # for res in original_result:
     #     print(res)
@@ -227,10 +249,11 @@ def main(search_query):
     #     parameters = {"restrict_sr": True, "limit": 100, "sort": sort_type, "q": search_term, "t": time}
     #     results_add, subreddits_add, after, count = get_results(parameters, headers, session, subreddit_check, results, specific_sub=sub_name)
     #     results += results_add
-
+    most_positive = []
+    most_negative = []
     for result in results:
-        total_counter, pos_counter = classify_text(result, classifier, top_100_neg, top_100_pos, sia,
-                                                   total_counter, pos_counter)
+        total_counter, pos_counter, most_positive, most_negative = classify_text(result, classifier, top_100_neg, top_100_pos, sia,
+                                                   total_counter, pos_counter, most_positive, most_negative)
 
     if total_counter != 0:
         print(f"Positive score: {round(100*pos_counter/total_counter,2)}%")
@@ -239,7 +262,7 @@ def main(search_query):
         print("")
 
         # return ({round(100*pos_counter/total_counter,2)}, common_subreddits)
-        return {round(100*pos_counter/total_counter,2)}
+        return {round(100*pos_counter/total_counter,2)}, most_positive, most_negative
     else:
         return None
     

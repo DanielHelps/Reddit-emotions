@@ -3,8 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import Emotion_Search
 from . import emotion_check
-from .models import SearchQ
-from .models import ImportantVars
+from .models import SearchQ, ImportantVars, Sentence
 import datetime
 from LoveHateGame import train
 
@@ -38,7 +37,7 @@ def home(request):
                         query = emot_search.cleaned_data["search_query"]
                         if len(list(SearchQ.objects.filter(query=query))) > 0:
                                 last_search = list(SearchQ.objects.filter(query=query))[len(list(SearchQ.objects.filter(query=query)))-2] 
-                                return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : last_search.score})
+                                return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : last_search.score, "positives":last_search.most_positive, "negatives":last_search.most_negative})
                         else:
                                 t = SearchQ(query=query)
                                 t.save()
@@ -61,16 +60,25 @@ def emotion_check_view(request, query, id):
         #         # days_difference = (last_search.date - datetime.datetime.now()).days
         #         # if abs(days_difference) < 7:
         #         return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : last_search.score})
-        scores = emotion_check.main(query)
+        scores, most_positive, most_negative = emotion_check.main(query)
         search_obj = SearchQ.objects.filter(id=id)[0]
         if scores is not None:
                 for score in scores: search_obj.score = score
         else:
                 score = None
         search_obj.date = datetime.datetime.now()
+        for sentence in most_positive:
+                sen = Sentence(sentence=sentence[0], sentence_score=sentence[1])
+                sen.save()
+                search_obj.most_positive.add(sen)
+        for sentence in most_negative:
+                sen = Sentence(sentence=sentence[0], sentence_score=sentence[1])
+                sen.save()
+                search_obj.most_negative.add(sen)
+        
         search_obj.save()
         # return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : score, "common_subs": common_subs})
-        return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : score})
+        return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : score, "positives":most_positive, "negatives":most_negative})
         
         
 

@@ -28,9 +28,10 @@
                         {{emot_search | crispy}}
                         <!-- {% comment %} </span> {% endcomment %} -->
                         <!-- {% comment %} <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %} -->
-                        <button name="search_but" value="clicked" type="submit" class="btn btn-primary mb-2 btnFetch">Search</button>
+                        <button name="search_but" value="clicked" type="submit" formaction="/" class="btn btn-primary mb-2 btnFetch">Search</button>
                     </form>
                     <br>
+                    <br>   
                     <!-- <span style="font-size: 20px;">How does it work?</span>   -->
                     <span id="explain_button">
                         <button type="button" class="btn btn-info btn-sm"><a href="#explanation">How does it work?</a></button>
@@ -42,25 +43,28 @@
 
 {% endblock content %}
 
+{% block content_2 %}
+{% endblock content_2 %}
+
 {% block content_3 %}
     <div class="grid-container">
         <!-- <div id="offset_trial" style="position:fixed"> blaah<br></div>
         <div id="offset_trial2" style="top:100px"> blaah</div> -->
-        <div class="grid-item"> </div>
+         <div class="grid-item"> </div>
         <div class="grid-item"></div>
         <div class="grid-item"> </div>
         <div class="grid-item"> </div>
         <div class="grid-item"> </div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"> </div>
-        <div class="grid-item"> </div>
-        <div class="grid-item"></div>
+        {% comment %}<div class="grid-item"></div>
         <div class="grid-item"></div>
         <div class="grid-item"> </div>
         <div class="grid-item"> </div>
         <div class="grid-item"></div>
         <div class="grid-item"></div>
+        <div class="grid-item"> </div>
+        <div class="grid-item"> </div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div> {% endcomment %}
         
         <div id="explanation" class="grid-explain">
             <h2>What's happening here?</h2>

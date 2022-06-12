@@ -8,52 +8,50 @@ Emotion check
 
 {% block head %}
 <script type='text/javascript' src="{% static 'main/dial_script.js' %}"></script>
+<link rel="stylesheet" href="{% static 'LoveHateGame/train.css' %}" type="text/css" media="screen">
+
 {% endblock head %}
-<!-- {% block content %}
 
-    <div class="grid-container">
-        <div class="search-item">  
-            <div id="search_bar">
-                <form method="GET" action="/" class=" form-inline">
-                    {% csrf_token %}
-                    <div class="pr-5">
-                        {{emot_search | crispy}}
-                    </div>
-                    <button name="search_but" value="clicked" type="submit"  class="btn btn-primary mb-2 btnFetch">Search</button>
-                </form>
-            </div>
-        </div>
-    </div>
-{% endblock content %} -->
-
-<!-- {% comment %} <div id="search_bar" class="wrapper">     {% endcomment %} -->
 {% block content_2 %}
     <br>
     {% if score is not None %}
-        {% comment %} {{score}} {% endcomment %}
-        <span class="grid-container">
+        <h2 class="centered_item">Positivity meter for "{{query}}":</h2>        
+        <div class="grid-container">
             <span class="centralized-item">
                 <div class="container chart" id="dial" data-size="300" data-value="{{score}}" data-arrow="up">
                 </div>
             </span>
         </div>
-        {% comment %} {{common_subs}} {% endcomment %}
+        
+        <h2 style="color:green" class="centered_item positive">Most positive sentences:</h2>
+        {% for a in sentences %}
+
+        {% if forloop.counter0 == 3 %}
+            <h2 style="color:red" class="centered_item negative">Most negative sentences:</h2>
+        {% endif %}
+            <!-- <div id="content"> -->{% if forloop.counter0 < 3 %}
+                <div class="testimonial positive centered_item">
+            {% else %}
+                <div class="testimonial negative centered_item">
+            {% endif %}
+                
+                    <blockquote>
+                        {{a.sentence}} <br>
+                        <h4>Score: {{a.sentence_score}}</h4>
+                    </blockquote>
+                    <div></div>
+
+                </div>
+            <!-- </div> -->
+        {% endfor %}
+
+
     {% else %}
-        Error, no results found!
+        <h2 class="centered_item">Error, no results found!</h2>
     {% endif %}
 
-{% for sentence in positives %}
-  positive sentence: 
-  {{sentence.0}}
-  {{sentence.1}}
-    <br>
-{% endfor %}
 
-{% for sentence in negatives %}
-  negative sentence: 
-  {{sentence.0}}
-  {{sentence.1}}
-    <br>
-{% endfor %}
+
 
 {% endblock content_2 %}
+

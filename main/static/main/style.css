@@ -15,10 +15,34 @@
 /* https://coolors.co/d33f49-d7c0d0-eff0d1-77ba99-262730  second option */ 
 
 body{
-    background-color: #EFF0D1;
-    /* background-image: linear-gradient(to right, #437F97, #FFB30F); */
+  /* background-color: #42440c; */
+  
+    
     color: #262730;
+    background-image: 
+    linear-gradient(rgb(239, 240, 209,1), rgb(239, 240, 209,1)),
+    url("both_halves.jpg");
+    background-repeat: 
+    no-repeat,
+    no-repeat;
+    background-position: 
+    center,
+    center; 
+    background-attachment:
+    fixed,
+    fixed;
+    background-size:
+    40% 100%,
+    100% auto;
+    opacity:
+    1,
+    1;
+    
+
 }
+
+
+
 
 /* .container-fluid{
     opacity: 0%;
@@ -27,38 +51,35 @@ body{
 
 .grid-container {
     display: grid;
-    grid-template-columns: auto auto 40% auto auto;
-    gap: 1px;
+    grid-template-columns: 15% 15% 40% 15% 15%;
+    gap: 0px;
     /* background-color: #D33F49; */
     /* padding: 2px; */
   }
 
   .grid-container > .search-item {
-    background-color: rgba(255, 255, 255, 0.8);
+    /* background-color: rgba(255, 255, 255, 1); */
     border: 1px solid black;
     grid-column-start: 3;
     text-align: center;
-    /* padding: 10px 0px;
-    min-width: 300px; */
+  
     padding: 0.5vh 0px;
-    min-width: 15vw;
+
     
     font-size: 30px;
+    width: auto;
+
     display: flex;
-    /* flex-grow: 1; */
-    /* flex-wrap: wrap;  */
-    /* justify-self: stretch; */
-    align-self: stretch;
-    flex-basis: 100%;
-    flex-grow: 1;
-    
+    justify-self: center;
+    flex-basis: 100%; 
+
   }
 
-  #search_bar{
+  /* #search_bar{
     display: flex;
     justify-content: center;
     flex-grow: 1;
-  }
+  } */
 
   .min_width_elem{
     /* min-width: 400px; */
@@ -67,19 +88,20 @@ body{
 
   .grid-container > .centralized-item {
     grid-column: 3 / 4;
-    background-color: rgba(255, 255, 255, 0.8);
+    /* background-color: rgba(255, 255, 255, 1); */
     border: 1px solid black;
     text-align: center;
-    padding: 0.5vh 0;
+    /* padding: 0.5vh 0; */
     width: auto;
-    /* display: flex;
-    justify-self: stretch;
-    flex-basis: 100%; */
+    /* min-width: 30vw; */
+    display: flex;
+    justify-self: center;
+    flex-basis: 100%; 
   }
 
   .grid-container > .grid-item {
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid black;
+    /* background-color: rgba(255, 255, 255, 1);
+    border: 1px solid black; */
     text-align: center;
     /* padding: 10px 10px; */
     /* width: auto; */
@@ -102,16 +124,20 @@ body{
   .grid-container > .grid-explain {
     grid-row: 5;
     grid-column: 3 / 4;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 1);
     border: 1px solid black;
     text-align: center;
-    padding: 10px 0;
+    /* padding: 10px 0; */
     width: auto;
-    padding: 50px;
+    opacity: 0;
+    /* width: auto; */
+    /* min-width: 40vw; */
+    
     /* display: flex;
     justify-self: stretch;
     flex-basis: 100%; */
   }
+
 #dial{
     /* max-width: 80px; */
     position: relative;
@@ -131,17 +157,25 @@ body{
 }
 
 #search_bar{
-    width: 20%;
+    /* width: 20%; */
     margin: auto;
     animation: comein_left 0.5s ease 0s 1 forwards;
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
 }
 .asteriskField {
     display: none;
 }
 
-#explanation {
-  /* display: none; */
-  opacity: 0;
+.positive{
+  opacity: 0%;
+  animation: comein_left 0.8s ease 0.5s 1 forwards;
+}
+
+.negative{
+  opacity: 0%;
+  animation: comein_right 0.8s ease 1s 1 forwards;
 }
 
 #explain_button a:link{
@@ -164,6 +198,12 @@ body{
   filter: opacity(50%);
 }
 
+.centered_item{
+  max-width: 40vw;
+  
+  margin: 1vh auto;
+}
+
 @keyframes comein_left {
     from {transform: translateX(-10em);
         opacity: 0%
@@ -172,6 +212,16 @@ body{
     to {
         opacity: 100%}
         /* transform: rotate(0deg)} */
+}
+
+@keyframes comein_right {
+  from {transform: translateX(10em);
+      opacity: 0%
+      ;
+  /* transform: rotate(180deg);} */}
+  to {
+      opacity: 100%}
+      /* transform: rotate(0deg)} */
 }
 
 @keyframes appearing {
@@ -192,4 +242,39 @@ body{
     to {
         opacity: 100%}
         /* transform: rotate(0deg)} */
+}
+
+@media only screen and (max-width: 767px){
+  /* phones */
+  body{
+      color: #262730;
+      background-image: 
+      linear-gradient(rgb(239, 240, 209,1), rgb(239, 240, 209,1)),
+      url("both_halves_mobile_3.jpeg");
+      background-repeat: 
+      no-repeat,
+      no-repeat;
+      background-position: 
+      center,
+      center; 
+      background-attachment:
+      fixed,
+      fixed;
+      background-size:
+      70% 100%,
+      100% auto;
+      opacity:
+      1,
+      1;
+      
+  
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: auto auto 70% auto auto;
+    gap: 0px;
+    /* background-color: #D33F49; */
+    /* padding: 2px; */
+  }
 }

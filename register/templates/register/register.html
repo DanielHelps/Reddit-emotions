@@ -4,7 +4,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<form class="form-group" method="POST">
+<form class="form-group centered_item" method="POST">
     {% csrf_token %}
     {{form | crispy}}
     <button type="submit" class="btn btn-success">Register</button>

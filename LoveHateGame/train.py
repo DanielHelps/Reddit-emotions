@@ -20,6 +20,6 @@ def train_today():
             if list(SearchQ.objects.filter(query=item, date=date_today)) == []:
                 scores = emotion_check.main(item)
                 if  scores is not None:
-                    search_obj = SearchQ(query=item, score=list(scores)[0], date = date_today)        
+                    search_obj = SearchQ(query=item, score=int(list(scores)[0]), date = date_today)        
                     search_obj.save()
             pass

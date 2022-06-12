@@ -9,11 +9,9 @@
     background: linear-gradient(to left, #d7dde8, #757f9a);
   } */
   
-  #content {
-    max-width: 600px;
-    margin: 1vh auto;
-  }
-  
+
+
+
   .testimonial blockquote {
     margin: 10px 10px 0;
     background: #262730;

@@ -17,18 +17,19 @@ def check_today_training():
                 train.train_today()
         else:
                 if train_date.date != datetime.date.today():
+                        train.train_today()
                         train_date.date = datetime.date.today()
                         train_date.save()
-                        train.train_today()
+                        
                
+def get_pos_neg_sens(search: SearchQ):
+        all_sens = search.most_positive.all() | search.most_negative.all()
+        sorted_sens = sorted(all_sens, key=lambda tup: tup.sentence_score, reverse=True)
+        return sorted_sens
 
-def home(request):
-        # try:
-                # if last_trained_date == 
-                
-        # except NameError:
-        # print(get_random_post())
         
+def home(request):
+       
         check_today_training()
         
         if request.GET.get("search_but"):
@@ -37,7 +38,8 @@ def home(request):
                         query = emot_search.cleaned_data["search_query"]
                         if len(list(SearchQ.objects.filter(query=query))) > 0:
                                 last_search = list(SearchQ.objects.filter(query=query))[len(list(SearchQ.objects.filter(query=query)))-2] 
-                                return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : last_search.score, "positives":last_search.most_positive, "negatives":last_search.most_negative})
+                                sentences = get_pos_neg_sens(last_search)
+                                return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : last_search.score, "sentences" : sentences})
                         else:
                                 t = SearchQ(query=query)
                                 t.save()
@@ -54,31 +56,37 @@ def home(request):
 
 def emotion_check_view(request, query, id):
         emot_search = Emotion_Search()
+        
         # (scores, common_subs) = emotion_check.main(query)
         # if len(list(SearchQ.objects.filter(query=query))) > 1:
         #         last_search = list(SearchQ.objects.filter(query=query))[len(list(SearchQ.objects.filter(query=query)))-2] 
         #         # days_difference = (last_search.date - datetime.datetime.now()).days
         #         # if abs(days_difference) < 7:
         #         return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : last_search.score})
-        scores, most_positive, most_negative = emotion_check.main(query)
+        score, most_positive, most_negative = emotion_check.main(query)
         search_obj = SearchQ.objects.filter(id=id)[0]
-        if scores is not None:
-                for score in scores: search_obj.score = score
+        if score is not None:
+                search_obj.score = score
         else:
                 score = None
         search_obj.date = datetime.datetime.now()
-        for sentence in most_positive:
-                sen = Sentence(sentence=sentence[0], sentence_score=sentence[1])
-                sen.save()
-                search_obj.most_positive.add(sen)
-        for sentence in most_negative:
-                sen = Sentence(sentence=sentence[0], sentence_score=sentence[1])
-                sen.save()
-                search_obj.most_negative.add(sen)
         
+        for sentence in most_positive:
+                if len(search_obj.most_positive.all()) < 3:
+                        sen = Sentence(sentence=sentence[0], sentence_score=sentence[1])
+                        sen.save()
+                        search_obj.most_positive.add(sen)
+        for sentence in most_negative:
+                if len(search_obj.most_negative.all()) < 3:
+                        sen = Sentence(sentence=sentence[0], sentence_score=sentence[1])
+                        sen.save()
+                        search_obj.most_negative.add(sen)
+                
         search_obj.save()
+        sentences = get_pos_neg_sens(search_obj)
+
         # return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : score, "common_subs": common_subs})
-        return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : score, "positives":most_positive, "negatives":most_negative})
+        return render(request, "main/emotion_check.html", {"query": query, "emot_search": emot_search, "score" : score, "sentences" : sentences})
         
         
 

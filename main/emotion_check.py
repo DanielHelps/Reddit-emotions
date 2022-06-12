@@ -262,9 +262,9 @@ def main(search_query):
         print("")
 
         # return ({round(100*pos_counter/total_counter,2)}, common_subreddits)
-        return {round(100*pos_counter/total_counter,2)}, most_positive, most_negative
+        return round(100*pos_counter/total_counter,2), most_positive, most_negative
     else:
-        return None
+        return None, [], []
     
 
 

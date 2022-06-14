@@ -12,9 +12,9 @@ def check_today_training():
         try:
                 train_date = ImportantVars.objects.filter(purpose="last_trained_date")[0]
         except IndexError:
+                train.train_today()
                 t = ImportantVars(date=datetime.date.today(), purpose="last_trained_date")
                 t.save()
-                train.train_today()
         else:
                 if train_date.date != datetime.date.today():
                         train.train_today()

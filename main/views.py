@@ -25,6 +25,7 @@ def check_today_training():
 def get_pos_neg_sens(search: SearchQ):
         all_sens = search.most_positive.all() | search.most_negative.all()
         sorted_sens = sorted(all_sens, key=lambda tup: tup.sentence_score, reverse=True)
+        sorted_sens[3:6] = sorted_sens[3:6][::-1]
         return sorted_sens
 
         
@@ -73,12 +74,12 @@ def emotion_check_view(request, query, id):
         
         for sentence in most_positive:
                 if len(search_obj.most_positive.all()) < 3:
-                        sen = Sentence(sentence=sentence[0], sentence_score=sentence[1])
+                        sen = Sentence(sentence=sentence[0], sentence_score=round(sentence[1],2))
                         sen.save()
                         search_obj.most_positive.add(sen)
         for sentence in most_negative:
                 if len(search_obj.most_negative.all()) < 3:
-                        sen = Sentence(sentence=sentence[0], sentence_score=sentence[1])
+                        sen = Sentence(sentence=sentence[0], sentence_score=round(sentence[1],2))
                         sen.save()
                         search_obj.most_negative.add(sen)
                 

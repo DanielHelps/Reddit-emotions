@@ -57,5 +57,21 @@
     margin: 8px 0 0 20px;
     text-align: left;
     color: #262730;
+    
+  }
+
+  .testimonial h4 {
+    color: #77BA99;
+    font-size: 1.2em;
   }
   
+  @media only screen and (max-width: 767px){
+    .testimonial blockquote {
+      font-size: 0.7em;
+    }
+
+    .testimonial h4 {
+      color: #77BA99;
+      font-size: 2em;
+    }
+  }

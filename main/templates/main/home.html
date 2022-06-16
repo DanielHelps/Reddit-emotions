@@ -8,6 +8,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+
     <!-- {% comment %} <form method="GET" action="/" class="form-group">
         {% csrf_token %}
         <div class="input-group mb-3">
@@ -30,11 +31,10 @@
                         <!-- {% comment %} <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %} -->
                         <button name="search_but" value="clicked" type="submit" formaction="/" class="btn btn-primary mb-2 btnFetch">Search</button>
                     </form>
-                    <br>
-                    <br>   
+                      
                     <!-- <span style="font-size: 20px;">How does it work?</span>   -->
                     <span id="explain_button">
-                        <button type="button" class="btn btn-info btn-sm"><a href="#explanation">How does it work?</a></button>
+                        <button type="button" class="btn btn-info btn-sm"><a href="#explanation" id="explain_button">How does it work?</a></button>
                     </span>
                 </span>
             </div>
@@ -86,6 +86,10 @@
                 As a logged user, you will be able see past searches you performed and their scores.<br>
                 I will also add more benefits to registered users, that will apply retroactively, so registering
                 now can actually benefit you in the future :)
+            </p>
+            <h2>Nice background! where is it from?</h2>
+            <p>
+                Thanks! Credit to the background goes to redditor <a href="https://www.reddit.com/user/drusinow2/">@drusinow2</a> who created it.
             </p>
             <h2>Is this an open-source project?</h2>
             <p>

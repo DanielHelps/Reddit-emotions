@@ -2,7 +2,12 @@ $(function(){
 
 var Dial = function(container) {
   this.container = container;
-  this.size = this.container.dataset.size;
+  if (screen.width <= 767){
+    this.size = this.container.dataset.size / 1.3;
+  } else {
+    this.size = this.container.dataset.size;
+  }
+  
   this.strokeWidth = this.size / 8;
   this.radius = (this.size / 2) - (this.strokeWidth / 2);
   this.value = this.container.dataset.value;

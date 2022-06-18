@@ -6,7 +6,7 @@ from . import emotion_check
 from .models import SearchQ, ImportantVars, Sentence
 import datetime
 from LoveHateGame import train
-
+from .classifier_functions import main_training
 
 def check_today_training():
         try:
@@ -32,6 +32,9 @@ def get_pos_neg_sens(search: SearchQ):
 def home(request):
        
         check_today_training()
+        main_training()
+        
+        
         
         if request.GET.get("search_but"):
                 emot_search = Emotion_Search(request.GET)

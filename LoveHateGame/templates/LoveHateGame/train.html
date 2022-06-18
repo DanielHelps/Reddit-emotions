@@ -6,10 +6,24 @@
 {% block head %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'LoveHateGame/train.css' %}" type="text/css" media="screen">
+    
 {% endblock head %}
 {% load crispy_forms_tags %}
 
 {% block content %}
+<script>
+$(document).ready(function(){
+    $("button").on("click",function(){
+        
+        $("#content").animate({
+          left: '3em',
+          opacity: '0',
+          height: '20px',
+          width: '1000px'
+        });
+      }); 
+    })
+</script>
 <!-- <span class="grid-container">
     <span class="centralized-item"> -->
         <div id="content">
@@ -38,3 +52,4 @@
     </span>
 </span>
 {% endblock content_2 %}
+

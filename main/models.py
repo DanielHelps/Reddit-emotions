@@ -43,3 +43,6 @@ class ImportantVars(models.Model):
     date = models.DateField()
     purpose = models.CharField(max_length=200, null=True)
     
+    def __str__(self):
+        return self.purpose
+    

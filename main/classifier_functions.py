@@ -1,4 +1,6 @@
 import re
+import pickle
+import datetime
 
 def initialize():
     import nltk
@@ -97,7 +99,7 @@ def importing():
     from statistics import mean
     
     
-def main_training(new_training_data=None):
+def main_training(extra_positive_data=[], extra_negative_data=[]):
     importing()
     
     # REMOVE AFTER!!!!!!!!!!!!!!!!!!!
@@ -123,10 +125,12 @@ def main_training(new_training_data=None):
 
 
     neg_tweets = twitter_samples.strings('negative_tweets.json')
+    neg_tweets += extra_negative_data
     # neg_tweets_exp_count = [find_expressions(tweet, sad_expressions) for tweet in neg_tweets]
     # neg_tweets = [remove_tweet_unwanted(tweet) for tweet in neg_tweets]
 
     pos_tweets = twitter_samples.strings('positive_tweets.json')
+    pos_tweets += extra_positive_data
     # pos_tweets_exp_count = [find_expressions(tweet, happy_expressions) for tweet in pos_tweets]
     # pos_tweets = [remove_tweet_unwanted(tweet) for tweet in pos_tweets]
 
@@ -177,3 +181,10 @@ def main_training(new_training_data=None):
     classifier = nltk.NaiveBayesClassifier.train(features[:train_count])
     classifier.show_most_informative_features(10)
     print(nltk.classify.accuracy(classifier, features[train_count:]))
+    date = datetime.datetime.date(datetime.datetime.now())
+    classifier_name = f'classifier_{date}.pickle'
+    f = open(classifier_name, 'wb')
+    pickle.dump(classifier, f)
+    f.close()
+    return classifier_name, date
+    

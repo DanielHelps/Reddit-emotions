@@ -17,8 +17,8 @@ import asyncio
 import aiohttp
 import operator
 
-def import_classifier():
-    f = open('classifier.pickle', 'rb')
+def import_classifier(latest_classifier):
+    f = open(latest_classifier, 'rb')
     classifier = pickle.load(f)
     f.close()
     return classifier
@@ -189,11 +189,11 @@ async def by_aiohttp_concurrency(total, params, current_time, month_time):
     #     print(res)
 
 
-def main(search_query):
+def main(search_query, latest_classifier):
     
     pos_counter = 0
     total_counter = 0
-    classifier = import_classifier()
+    classifier = import_classifier(latest_classifier)
     top_100_neg, top_100_pos = import_top_100()
     sia = SentimentIntensityAnalyzer()
     # headers = get_oauth()

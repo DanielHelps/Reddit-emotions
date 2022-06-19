@@ -8,7 +8,7 @@ from main import emotion_check
 global train_day
 train_day = 0
 
-def train_today():
+def train_today(latest_classifier):
     global train_day
     if train_day != datetime.datetime.date(datetime.datetime.now()):
         train_day = datetime.datetime.date(datetime.datetime.now())
@@ -18,7 +18,7 @@ def train_today():
         for item in today_trends.loc[:,0]:
             print(item)
             if list(SearchQ.objects.filter(query=item, date=date_today)) == []:
-                scores = emotion_check.main(item)
+                scores = emotion_check.main(item, latest_classifier)
                 if  scores[0] is not None:
                     search_obj = SearchQ(query=item, score=int(list(scores)[0]), date = date_today)        
                     search_obj.save()

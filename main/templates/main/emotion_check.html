@@ -37,7 +37,11 @@ Emotion check
                 
                     <blockquote>
                         {{a.sentence}} <br>
-                        <h4>Score: {{a.sentence_score}}</h4>
+                        {% if forloop.counter0 <= 2 %}
+                            <h4 class="pos_score">Score: {{a.sentence_score}}</h4>
+                        {% else %}
+                            <h4 class="neg_score">Score: {{a.sentence_score}}</h4>
+                        {% endif %}
                     </blockquote>
                     <div></div>
 

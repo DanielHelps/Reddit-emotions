@@ -13,5 +13,5 @@ import main.emotion_check
 # import requests
 # from collections import Counter
 
-main.emotion_check.import_classifier()
+# main.emotion_check.import_classifier()
 main.emotion_check.import_top_100()

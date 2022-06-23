@@ -21,7 +21,9 @@ CELERY_BROKER_URL = 'rediss://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac
 #: from unwanted access (see userguide/security.html)
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_CACHE_BACKEND = 'default'
 
 
 
@@ -55,7 +57,8 @@ INSTALLED_APPS = [
     'register.apps.RegisterConfig',
     'debug_toolbar',
     'crispy_forms',
-    'LoveHateGame.apps.LovehategameConfig'
+    'LoveHateGame.apps.LovehategameConfig',
+    'django_celery_results',
 
 ]
 
@@ -73,8 +76,8 @@ MIDDLEWARE = [
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get('REDIS_URL'),
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": 'my_cache_table',
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "CONNECTION_POOL_KWARGS": {

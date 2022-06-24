@@ -8,6 +8,8 @@ from main.models import TrainData, TrainIps
 from django.db.models import Q
 # global train_post
 import time
+import requests 
+from requests.auth import HTTPBasicAuth
 
 app = Celery('tasks', broker='rediss://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac3b68f225554b377d@ec2-52-50-219-146.eu-west-1.compute.amazonaws.com:7740')
 
@@ -81,31 +83,131 @@ def get_training_post(x_forwarded_for, REMOTE_ADDR, train_but, method, train_pos
     # new_post = TrainData(post_title=train_post, author=author, subreddit=subreddit, date=datetime.datetime.now())
     # new_post.save()
 
+@shared_task
+def get_oauth():
+    auth = HTTPBasicAuth('vw-fkwBL0vnxGZ5Ofm5VKw', 'ULkWg9VlM0ObIqI1nDdtdVsFsmTG5Q')
+    # auth = HTTPBasicAuth('classified', 'classified')
 
+    # here we pass our login method (password), username, and password
+    data = {'grant_type': 'password',
+            'username': 'checking_sentiment',
+            'password': '8S(pM;,E]crQQ{9:'}
+
+    # data =  {'grant_type': 'password',
+    #         'username': 'classified',
+    #         'password': 'classified'}
+
+    # setup our header info, which gives reddit a brief description of our app
+    headers = {'User-Agent': 'sentiment_analysis_bot'}
+    # send our request for an OAuth token
+    res = requests.post('https://www.reddit.com/api/v1/access_token',
+                        auth=auth, data=data, headers=headers)
+
+    # convert response to JSON and pull access_token value
+    TOKEN = res.json()['access_token']
+
+    # add authorization to our headers dictionary
+    headers = {**headers, **{'Authorization': f"bearer {TOKEN}"}}
+
+    # while the token is valid (~2 hours) we just add headers=headers to our requests
+    requests.get('https://oauth.reddit.com/api/v1/me', headers=headers)
+
+    return headers
+
+@shared_task
+def get_random_post():
+    headers = get_oauth()
+    res = requests.get("https://oauth.reddit.com/random", headers=headers)
+    post_title = res.json()[0]['data']['children'][0]['data']['title']
+    author = res.json()[0]['data']['children'][0]['data']['author']
+    subreddit = res.json()[0]['data']['children'][0]['data']['subreddit_name_prefixed']
+    # *****************
+    return post_title, author, subreddit
+
+@shared_task
+def save_random_post():
+    post_title, author, subreddit = get_random_post()
+    new_post = TrainData(post_title=post_title, author=author, subreddit=subreddit, date=datetime.datetime.now())
+    new_post.save()
+
+@shared_task
+def get_next_post_update(x_forwarded_for, REMOTE_ADDR, current_train_post, max_answers=3):
+    ip_str = get_client_ip(x_forwarded_for, REMOTE_ADDR)
+    
+    try:
+        if 'ip_obj' not in locals():
+            ip_obj = TrainIps.objects.get(ip=ip_str)
+        # print(TrainData.train_ips.through.objects.all())
+        print(f"Current train post: {current_train_post}")
+        post = TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=current_train_post), times_answered__lt = max_answers)[1]
+        print("1111111111111111111111")
+        print(post.post_title, post.author, post.subreddit)
+        return post.post_title, post.author, post.subreddit
+    except:
+        train_post, author, subreddit = get_random_post()
+        new_post = TrainData(post_title=train_post, author=author, subreddit=subreddit, date=datetime.datetime.now())
+        new_post.save()
+        print("2222222222222222222222")
+        print(new_post.post_title, new_post.author, new_post.subreddit )
+        return new_post.post_title, new_post.author, new_post.subreddit 
+
+@shared_task
 def get_next_post(ip_str, max_answers, next_train_post, next_author, next_subreddit):
     try:
         if 'ip_obj' not in locals():
             ip_obj = TrainIps.objects.get(ip=ip_str)
         # Searching for existing post with <3 answers and without the current IP
-        post = TrainData.objects.filter(~Q(train_ips=ip_obj), times_answered__lt = max_answers)[0]
-        return post
+        post = TrainData.objects.filter(~Q(train_ips=ip_obj), times_answered__lt = max_answers)[1]
+        print("1111111111111111111111")
+        return post.post_title, post.author, post.subreddit
     except:
         train_post, author, subreddit = next_train_post, next_author, next_subreddit
         new_post = TrainData(post_title=train_post, author=author, subreddit=subreddit, date=datetime.datetime.now())
         new_post.save()
-        return new_post
-    
+        print("2222222222222222222222")
+        return new_post.post_title, new_post.author, new_post.subreddit    
     
 @shared_task
 def get_async_next_post(ip_str, max_answers):
-    # try:
-    #     if 'ip_obj' not in locals():
-    #         ip_obj = TrainIps.objects.get(ip=ip_str)
-    #     # print(TrainData.train_ips.through.objects.all())
-    #     post = TrainData.objects.filter(~Q(train_ips=ip_obj), times_answered__lt = max_answers)[0]
-    # except:
-    rand_train_post, rand_author, rand_subreddit = get_random_post()
+    
+    # res = get_random_post.delay()
+    
+    ######################
+    auth = HTTPBasicAuth('vw-fkwBL0vnxGZ5Ofm5VKw', 'ULkWg9VlM0ObIqI1nDdtdVsFsmTG5Q')
+    # auth = HTTPBasicAuth('classified', 'classified')
+
+    # here we pass our login method (password), username, and password
+    data = {'grant_type': 'password',
+            'username': 'checking_sentiment',
+            'password': '8S(pM;,E]crQQ{9:'}
+
+    # data =  {'grant_type': 'password',
+    #         'username': 'classified',
+    #         'password': 'classified'}
+
+    # setup our header info, which gives reddit a brief description of our app
+    headers = {'User-Agent': 'sentiment_analysis_bot'}
+    # send our request for an OAuth token
+    res = requests.post('https://www.reddit.com/api/v1/access_token',
+                        auth=auth, data=data, headers=headers)
+
+    # convert response to JSON and pull access_token value
+    TOKEN = res.json()['access_token']
+
+    # add authorization to our headers dictionary
+    headers = {**headers, **{'Authorization': f"bearer {TOKEN}"}}
+
+    # while the token is valid (~2 hours) we just add headers=headers to our requests
+    requests.get('https://oauth.reddit.com/api/v1/me', headers=headers)
+    
+    res = requests.get("https://oauth.reddit.com/random", headers=headers)
+    rand_train_post = res.json()[0]['data']['children'][0]['data']['title']
+    rand_author = res.json()[0]['data']['children'][0]['data']['author']
+    rand_subreddit = res.json()[0]['data']['children'][0]['data']['subreddit_name_prefixed']
+    ######################
+    
+    
+    # rand_train_post, rand_author, rand_subreddit = res.get()
     post = get_next_post(ip_str, max_answers, rand_train_post, rand_author, rand_subreddit)
     return post.post_title, post.author, post.subreddit
-    # new_post = TrainData(post_title=train_post, author=author, subreddit=subreddit, date=datetime.datetime.now())
-    # new_post.save()
+    

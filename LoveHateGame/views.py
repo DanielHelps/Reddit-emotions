@@ -4,7 +4,7 @@ from main.models import TrainData, TrainIps
 from django.db.models import Q
 import datetime
 import time
-from .tasks import add, get_training_post, get_async_next_post
+from .tasks import add, get_training_post, get_async_next_post, get_next_post_update
 # Create your views here.
 
 global train_post, next_train_post, next_author, next_subreddit
@@ -52,21 +52,45 @@ def train(request):
     global train_post, next_train_post, next_author, next_subreddit
     ip_str = get_client_ip(request)
     max_answers = 3
-    res = get_async_next_post(ip_str, max_answers)
-    new_train_post, new_author, new_subreddit = res.get()
+    
+    
+    # save_random_post.delay() 
+    # res = get_async_next_post.delay(ip_str, max_answers)
     
     if request.method == "POST":
         train_emot_click(request, ip_str)
         train_post = next_train_post
         author = next_author
         subreddit = next_subreddit
-        next_train_post = new_train_post
-        next_author = new_author
-        new_train_post = new_subreddit
     else:
-        train_post, author, subreddit = get_async_next_post(ip_str, max_answers)
-        
-        
+        # post = get_next_post(ip_str, max_answers, 'a','b','c')
+        train_post, author, subreddit = get_next_post_update(request.META.get('HTTP_X_FORWARDED_FOR'), request.META.get('REMOTE_ADDR'), current_train_post="None")
+        next_train_post, next_author, next_subreddit = get_next_post_update(request.META.get('HTTP_X_FORWARDED_FOR'), request.META.get('REMOTE_ADDR'), current_train_post=train_post)
+    
+    ip_obj = TrainIps.objects.get(ip=ip_str)
+    # if a
+    # while a.state != "SUCCESS":
+    #     time.sleep(0.1)
+    a = get_next_post_update.delay(request.META.get('HTTP_X_FORWARDED_FOR'), request.META.get('REMOTE_ADDR'), next_train_post)
+    while True:
+        try:
+            # next_train_post, next_author, next_subreddit = a.get()
+            
+            next_post = TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=train_post), times_answered__lt = max_answers)[0]
+        except:
+            while a.state != "SUCCESS":
+                time.sleep(0.1)
+            continue
+        break
+    
+    
+    if request.method == "POST":
+        # next_train_post, next_author, next_subreddit = next_post.post_title, next_post.author, next_post.subreddit
+        train_post, author, subreddit = next_post.post_title, next_post.author, next_post.subreddit
+
+    # next_post.
+    # new_post = res.get()
+    # next_train_post, next_author, next_subreddit = res.get()
     
     # if request.method == "GET":
     #     res = get_training_post(request.META.get('HTTP_X_FORWARDED_FOR'), request.META.get('REMOTE_ADDR'), request.POST.get("train_button"), request.method, train_post)

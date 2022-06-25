@@ -73,6 +73,16 @@
   font-size: 1.2em;
 }
 
+#loading_bar {
+  position: absolute;
+  /* align-self: center; */
+  /* opacity: 0%; */
+  opacity: 1;
+  top: 80px;
+  right: 50vw;
+  /* float: center;   */
+}
+
 @keyframes comein_right {
   from {transform: translateX(3em);
       opacity: 0%

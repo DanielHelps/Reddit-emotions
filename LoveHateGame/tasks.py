@@ -11,6 +11,9 @@ import time
 import requests 
 from requests.auth import HTTPBasicAuth
 
+
+
+
 app = Celery('tasks', broker='rediss://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac3b68f225554b377d@ec2-52-50-219-146.eu-west-1.compute.amazonaws.com:7740')
 
 def get_client_ip(x_forwarded_for, REMOTE_ADDR):
@@ -26,7 +29,8 @@ def get_client_ip(x_forwarded_for, REMOTE_ADDR):
 def add(x, y):
     
     time.sleep(3)
-    return x + y
+    print(x+y)
+    # return x + y
 
 
 @shared_task
@@ -43,7 +47,7 @@ def get_training_post(x_forwarded_for, REMOTE_ADDR, train_but, method, train_pos
     # global train_post
     max_answers = 3
     ip_str = get_client_ip(x_forwarded_for, REMOTE_ADDR)
-    print("DONNNNNNNNNNNNNNNNNNNNNNNNNE")
+   
     print(train_post)
     if method == "POST":
         # if "positive" in requ est.POST:
@@ -116,8 +120,10 @@ def get_oauth():
 
 @shared_task
 def get_random_post():
-    headers = get_oauth()
-    res = requests.get("https://oauth.reddit.com/random", headers=headers)
+    # headers = get_oauth()
+    # print(headers)
+    headers = {'User-Agent': 'sentiment_analysis_bot', 'Authorization': 'bearer 1764285820863-nZZolhuiCOPnXBcXtpQlmh30Z9IUCA'}
+    res = requests.get("https://oauth.reddit.com/random", headers= headers)
     post_title = res.json()[0]['data']['children'][0]['data']['title']
     author = res.json()[0]['data']['children'][0]['data']['author']
     subreddit = res.json()[0]['data']['children'][0]['data']['subreddit_name_prefixed']
@@ -127,6 +133,12 @@ def get_random_post():
 @shared_task
 def save_random_post():
     post_title, author, subreddit = get_random_post()
+    while True:
+        try:
+            TrainIps.objects.get(post_title=post_title)
+        except:
+            break
+        
     new_post = TrainData(post_title=post_title, author=author, subreddit=subreddit, date=datetime.datetime.now())
     new_post.save()
 
@@ -136,7 +148,11 @@ def get_next_post_update(x_forwarded_for, REMOTE_ADDR, current_train_post, max_a
     
     try:
         if 'ip_obj' not in locals():
-            ip_obj = TrainIps.objects.get(ip=ip_str)
+            try:
+                ip_obj = TrainIps.objects.get(ip=ip_str)
+            except:
+                ip_obj = TrainIps(ip=ip_str)
+                ip_obj.save()
         # print(TrainData.train_ips.through.objects.all())
         print(f"Current train post: {current_train_post}")
         post = TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=current_train_post), times_answered__lt = max_answers)[1]
@@ -149,6 +165,12 @@ def get_next_post_update(x_forwarded_for, REMOTE_ADDR, current_train_post, max_a
         new_post.save()
         print("2222222222222222222222")
         print(new_post.post_title, new_post.author, new_post.subreddit )
+        print(f"number of next posts: {len(TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=current_train_post), times_answered__lt = max_answers))}")
+        if len(TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=current_train_post), times_answered__lt = max_answers)) < 2:
+            extra_train_post, extra_author, extra_subreddit = get_random_post()
+            extra_new_post = TrainData(post_title=extra_train_post, author=extra_author, subreddit=extra_subreddit, date=datetime.datetime.now())
+            extra_new_post.save()
+        
         return new_post.post_title, new_post.author, new_post.subreddit 
 
 @shared_task

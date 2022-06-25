@@ -24,7 +24,13 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
 CELERY_CACHE_BACKEND = 'default'
-
+CELERY_BEAT_SCHEDULE = {
+    "scheduled_task":{
+        "task": "LoveHateGame.tasks.add",
+        "schedule": 5.0,
+        "args": (10,20),
+    }
+}
 
 
 
@@ -59,7 +65,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'LoveHateGame.apps.LovehategameConfig',
     'django_celery_results',
-
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [

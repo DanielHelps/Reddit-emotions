@@ -6,42 +6,41 @@
 {% block head %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'LoveHateGame/train.css' %}" type="text/css" media="screen">
-    
+    <script type='text/javascript' src="{% static 'LoveHateGame/train_scripts.js' %}"></script>
 {% endblock head %}
 {% load crispy_forms_tags %}
 
 {% block content %}
-<script>
-$(document).ready(function(){
-    $("button").on("click",function(){
-        
-        $("#content").animate({
-          left: '3em',
-          opacity: '0',
-          height: '20px',
-          width: '1000px'
-        });
-      }); 
-    })
-</script>
+
 <!-- <span class="grid-container">
     <span class="centralized-item"> -->
-        <div id="content">
+                
+        <span id ="loading_bar" class="spinner-border centered_item" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </span>
+
+        <div id="contents">
             <div class="testimonial centered_item">
+               
                 <blockquote>
                     {{post_title}}
                 </blockquote>
+                
                 <div></div>
                 <p>
+                    
                     {{author}} &mdash; {{subreddit}}
                 </p>
+                
             </div>
         </div>
+
+        
     <!-- </span> -->
 <!-- </span> -->
 {% endblock %}
 {% block content_2 %}
-<span class="grid-container">
+<span id="emot_buttons" class="grid-container">
     <span class="centralized-item">
         <form class="form-group" method="POST">
             {% csrf_token %}

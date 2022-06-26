@@ -6,6 +6,7 @@ from . import emotion_check
 from .models import SearchQ, ImportantVars, Sentence, TrainData
 import datetime
 from LoveHateGame import train
+from LoveHateGame.tasks import weekly_training
 from .classifier_functions import main_training
 import datetime
 
@@ -45,7 +46,6 @@ def home(request):
         global latest_classifier, classifier_date
         
         pos_data, neg_data = get_training_data()
-        
         # if classifier_date != datetime.datetime.date(datetime.datetime.now()):
         try:
                 date_today = datetime.datetime.date(datetime.datetime.now())

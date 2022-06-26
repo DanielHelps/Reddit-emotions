@@ -10,7 +10,7 @@ from django.db.models import Q
 import time
 import requests 
 from requests.auth import HTTPBasicAuth
-
+from main.classifier_functions import main_training
 
 
 
@@ -233,3 +233,11 @@ def get_async_next_post(ip_str, max_answers):
     post = get_next_post(ip_str, max_answers, rand_train_post, rand_author, rand_subreddit)
     return post.post_title, post.author, post.subreddit
     
+    
+@shared_task
+def weekly_training(max_answers):
+    extra_pos = TrainData.objects.filter(times_answered__gte = max_answers, positive_score__gte = 2)
+    extra_pos = list(extra_pos.values_list('post_title', flat=True))
+    extra_neg = TrainData.objects.filter(times_answered__gte = max_answers, positive_score__lte = -2)
+    extra_neg = list(extra_neg.values_list('post_title', flat=True))
+    main_training(extra_pos,extra_neg)

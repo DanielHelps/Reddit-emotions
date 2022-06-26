@@ -74,8 +74,6 @@ def train(request):
     a = get_next_post_update.delay(request.META.get('HTTP_X_FORWARDED_FOR'), request.META.get('REMOTE_ADDR'), next_train_post)
     while True:
         try:
-            # next_train_post, next_author, next_subreddit = a.get()
-            
             next_post = TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=train_post), times_answered__lt = max_answers)[0]
         except:
             while a.state != "SUCCESS":

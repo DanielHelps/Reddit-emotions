@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from picklefield.fields import PickledObjectField
 
 
 class Sentence(models.Model):
@@ -42,7 +43,14 @@ class TrainData(models.Model):
 class ImportantVars(models.Model):
     date = models.DateField()
     purpose = models.CharField(max_length=200, null=True)
+    value = models.IntegerField(null=True)
     
     def __str__(self):
         return self.purpose
     
+class Classifier(models.Model):
+    classifier_obj = PickledObjectField(null=True)
+    classifier_date = models.DateField()
+     
+    def __str__(self):
+        return f'{self.classifier_date} classifier'

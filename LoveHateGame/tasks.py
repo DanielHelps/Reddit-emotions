@@ -4,7 +4,7 @@ from celery import Celery
 import time
 import datetime
 from main.emotion_check import get_random_post
-from main.models import TrainData, TrainIps
+from main.models import TrainData, TrainIps, ImportantVars
 from django.db.models import Q
 # global train_post
 import time
@@ -14,7 +14,7 @@ from main.classifier_functions import main_training
 
 
 
-app = Celery('tasks', broker='rediss://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac3b68f225554b377d@ec2-52-50-219-146.eu-west-1.compute.amazonaws.com:7740')
+app = Celery('tasks', broker='redis://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac3b68f225554b377d@ec2-52-50-219-146.eu-west-1.compute.amazonaws.com:7740')
 
 def get_client_ip(x_forwarded_for, REMOTE_ADDR):
     # x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -45,7 +45,7 @@ def xsum(numbers):
 @shared_task
 def get_training_post(x_forwarded_for, REMOTE_ADDR, train_but, method, train_post):
     # global train_post
-    max_answers = 3
+    max_answers = ImportantVars.objects.get(purpose="max answers").value
     ip_str = get_client_ip(x_forwarded_for, REMOTE_ADDR)
    
     print(train_post)
@@ -120,10 +120,15 @@ def get_oauth():
 
 @shared_task
 def get_random_post():
-    # headers = get_oauth()
+    headers = get_oauth()
+    # print(headers)
+    # headers = {'User-Agent': 'sentiment_analysis_bot', 'Authorization': 'bearer 1764285820863-nZZolhuiCOPnXBcXtpQlmh30Z9IUCA'}
+    # try:
+    res = requests.get("https://oauth.reddit.com/random", headers= headers)
+    # except:
+        # headers = get_oauth()
     # print(headers)
     headers = {'User-Agent': 'sentiment_analysis_bot', 'Authorization': 'bearer 1764285820863-nZZolhuiCOPnXBcXtpQlmh30Z9IUCA'}
-    res = requests.get("https://oauth.reddit.com/random", headers= headers)
     post_title = res.json()[0]['data']['children'][0]['data']['title']
     author = res.json()[0]['data']['children'][0]['data']['author']
     subreddit = res.json()[0]['data']['children'][0]['data']['subreddit_name_prefixed']

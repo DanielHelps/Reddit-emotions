@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from main.emotion_check import get_random_post
-from main.models import TrainData, TrainIps
+from main.models import TrainData, TrainIps, ImportantVars
 from django.db.models import Q
 import datetime
 import time
@@ -51,7 +51,7 @@ def get_next_post(ip_str, max_answers, next_train_post, next_author, next_subred
 def train(request):
     global train_post, next_train_post, next_author, next_subreddit
     ip_str = get_client_ip(request)
-    max_answers = 3
+    max_answers = ImportantVars.objects.get(purpose="max answers").value
     
     
     # save_random_post.delay() 

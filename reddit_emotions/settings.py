@@ -16,7 +16,7 @@ from celery.schedules import crontab
 
 # Celery settings
 
-CELERY_BROKER_URL = 'rediss://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac3b68f225554b377d@ec2-52-50-219-146.eu-west-1.compute.amazonaws.com:7740'
+CELERY_BROKER_URL = 'redis://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac3b68f225554b377d@ec2-52-50-219-146.eu-west-1.compute.amazonaws.com:7740'
                      
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
@@ -26,10 +26,15 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
 CELERY_CACHE_BACKEND = 'default'
 CELERY_BEAT_SCHEDULE = {
+    # "weekly_training":{
+    #     "task": "LoveHateGame.tasks.weekly_training()",
+    #     "schedule": crontab(minute=0, hour=0, day_of_week='sunday'),
+    #     "args": (3),
+    # },
     "weekly_training":{
-        "task": "LoveHateGame.tasks.weekly_training(3)",
-        "schedule": crontab(minute=0, hour=0, day_of_week='sunday'),
-        "args": (3),
+        "task": "LoveHateGame.tasks.add",
+        "schedule": 40,
+        "args": (3,10),
     },
     # "nightly_top_searches":{
     #     "task": "LoveHateGame.tasks.weekly_training(3)",

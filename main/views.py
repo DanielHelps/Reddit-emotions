@@ -3,14 +3,13 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import Emotion_Search
 from . import emotion_check
-from .models import SearchQ, ImportantVars, Sentence, TrainData
+from .models import SearchQ, ImportantVars, Sentence, TrainData, Classifier
 import datetime
 from LoveHateGame import train
 from LoveHateGame.tasks import weekly_training
 from .classifier_functions import main_training
 import datetime
 
-global latest_classifier, classifier_date
 
 
 def check_today_training(latest_classifier):
@@ -34,33 +33,34 @@ def get_pos_neg_sens(search: SearchQ):
         return sorted_sens
 
 def get_training_data():
-        positive_data = TrainData.objects.filter(times_answered__gte = 3, positive_score__gte = 2)
+        max_answers =  ImportantVars.objects.get(purpose="max answers").value
+        positive_data = TrainData.objects.filter(times_answered__gte = max_answers, positive_score__gte = 2)
         positive_data = list(positive_data.values_list('post_title',flat=True))
-        negative_data = TrainData.objects.filter(times_answered__gte = 3, positive_score__lte = -2)
+        negative_data = TrainData.objects.filter(times_answered__gte = max_answers, positive_score__lte = -2)
         negative_data = list(negative_data.values_list('post_title',flat=True))
         return positive_data, negative_data
         
 
 
 def home(request):
-        global latest_classifier, classifier_date
         
-        pos_data, neg_data = get_training_data()
+        # weekly_training(3)
+        # pos_data, neg_data = get_training_data()
         # if classifier_date != datetime.datetime.date(datetime.datetime.now()):
-        try:
-                date_today = datetime.datetime.date(datetime.datetime.now())
-                trained_today = ImportantVars.objects.get(purpose="Most updated classifier").date == date_today
-        except:
-                latest_classifier, classifier_date = main_training(pos_data, neg_data)
-                most_recent_classifier = ImportantVars(date = classifier_date, purpose = "Most updated classifier")
-                most_recent_classifier.save()
-        else:
-                if not trained_today:
-                        latest_classifier, classifier_date = main_training(pos_data, neg_data)
-                        a = ImportantVars.objects.get(purpose = "Most updated classifier")
-                        a.date = date_today
-                        a.save()
-                latest_classifier = f'classifier_{date_today}.pickle'
+        # try:
+        #         date_today = datetime.datetime.date(datetime.datetime.now())
+        #         trained_today = ImportantVars.objects.get(purpose="Most updated classifier").date == date_today
+        # except:
+        #         latest_classifier, classifier_date = main_training(pos_data, neg_data)
+        #         most_recent_classifier = ImportantVars(date = classifier_date, purpose = "Most updated classifier")
+        #         most_recent_classifier.save()
+        # else:
+        #         if not trained_today:
+        #                 latest_classifier, classifier_date = main_training(pos_data, neg_data)
+        #                 a = ImportantVars.objects.get(purpose = "Most updated classifier")
+        #                 a.date = date_today
+        #                 a.save()
+        #         latest_classifier = f'classifier_{date_today}.pickle'
         
         
         if request.GET.get("search_but"):
@@ -86,7 +86,6 @@ def home(request):
 
 
 def emotion_check_view(request, query, id):
-        global latest_classifier
         emot_search = Emotion_Search()
         
         # (scores, common_subs) = emotion_check.main(query)
@@ -95,7 +94,7 @@ def emotion_check_view(request, query, id):
         #         # days_difference = (last_search.date - datetime.datetime.now()).days
         #         # if abs(days_difference) < 7:
         #         return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : last_search.score})
-        score, most_positive, most_negative = emotion_check.main(query, latest_classifier)
+        score, most_positive, most_negative = emotion_check.main(query)
         search_obj = SearchQ.objects.filter(id=id)[0]
         if score is not None:
                 search_obj.score = score

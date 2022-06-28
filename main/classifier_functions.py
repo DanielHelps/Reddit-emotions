@@ -1,7 +1,14 @@
 import re
 import pickle
 import datetime
-
+# from .models import Classifier
+import nltk
+# from nltk.sentiment import SentimentIntensityAnalyzer
+# from nltk.corpus import twitter_samples
+from random import shuffle
+# import re
+# from statistics import mean
+    
 def initialize():
     import nltk
     from nltk.sentiment import SentimentIntensityAnalyzer
@@ -97,7 +104,7 @@ def importing():
     from random import shuffle
     import re
     from statistics import mean
-    
+    from .models import Classifier
     
 def main_training(extra_positive_data=[], extra_negative_data=[]):
     importing()
@@ -109,6 +116,7 @@ def main_training(extra_positive_data=[], extra_negative_data=[]):
     from random import shuffle
     import re
     from statistics import mean
+    from .models import Classifier
     # REMOVE AFTER!!!!!!!!!!!!!!!!!!!
     
     
@@ -183,8 +191,10 @@ def main_training(extra_positive_data=[], extra_negative_data=[]):
     print(nltk.classify.accuracy(classifier, features[train_count:]))
     date = datetime.datetime.date(datetime.datetime.now())
     classifier_name = f'classifier_{date}.pickle'
-    f = open(classifier_name, 'wb')
-    pickle.dump(classifier, f)
-    f.close()
+    a = Classifier(classifier_obj=classifier, classifier_date=date)
+    a.save()
+    # f = open(classifier_name, 'wb')
+    # pickle.dump(classifier, f)
+    # f.close()
     return classifier_name, date
     

@@ -55,7 +55,8 @@ def check_sentence_list(method: str, sentence_list: list, sentence: tuple):
 def classify_text(text: str, classifier, top_100_neg: list, top_100_pos: list, sia, count: int, pos_count: int, most_positive: list, most_negative: list) -> \
 tuple[int, int]:
     features = extract_features(text, top_100_pos, top_100_neg, sia)
-    if abs(features["mean_compound"]) > 0.5:
+    min_mean_compound = 0.4
+    if abs(features["mean_compound"]) > min_mean_compound:
         print(text)
         print(features)
         count += 1

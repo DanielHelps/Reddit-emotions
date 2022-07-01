@@ -11,7 +11,7 @@ import time
 import requests 
 from requests.auth import HTTPBasicAuth
 from main.classifier_functions import main_training
-
+from .train import top_searches_train
 
 
 app = Celery('tasks', broker='redis://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac3b68f225554b377d@ec2-52-50-219-146.eu-west-1.compute.amazonaws.com:7740')
@@ -240,9 +240,24 @@ def get_async_next_post(ip_str, max_answers):
     
     
 @shared_task
-def weekly_training(max_answers):
+def weekly_training():
+    max_answers = ImportantVars.objects.get(purpose="max answers").value
     extra_pos = TrainData.objects.filter(times_answered__gte = max_answers, positive_score__gte = 2)
     extra_pos = list(extra_pos.values_list('post_title', flat=True))
     extra_neg = TrainData.objects.filter(times_answered__gte = max_answers, positive_score__lte = -2)
     extra_neg = list(extra_neg.values_list('post_title', flat=True))
     main_training(extra_pos,extra_neg)
+    
+@shared_task
+def daily_training():
+    try:
+        train_day = ImportantVars.objects.filter(purpose="last_trained_date")[0]
+    except IndexError:
+        top_searches_train()
+        t = ImportantVars(date=datetime.date.today(), purpose="last_trained_date")
+        t.save()
+    else:
+        if train_day.date != datetime.date.today():
+            top_searches_train()
+            train_day.date = datetime.date.today()
+            train_day.save()

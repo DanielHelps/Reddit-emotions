@@ -1,26 +1,27 @@
 $(document).ready(function(){
-    $("#loading_bar").animate({
-        opacity: '0',
-      });
+
+  $("#loading_bar").animate({
+      opacity: '0',
+  });
     
-    $("button").on("click",function(){
-        
-        $("#contents, #emot_buttons").animate({
+  $("[name='train_button']").on("click",function(){
+      
+      $("#contents, #emot_buttons").animate({
+        left: '3em',
+        opacity: '0',
+        height: '1vh',
+        width: '50vw'
+      });
+
+      $("#emot_buttons").animate({
           left: '3em',
           opacity: '0',
-          height: '20px',
-          width: '1000px'
+          height: '1vh',
+          width: '5vw'
         });
 
-        $("#emot_buttons").animate({
-            left: '3em',
-            opacity: '0',
-            height: '20px',
-            width: '1000px'
-          });
-
-        $("#loading_bar").animate({
-            opacity: '1',
-          });
-      }); 
-    })
+      $("#loading_bar").animate({
+          opacity: '1',
+        });
+  }); 
+})

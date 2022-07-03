@@ -29,7 +29,7 @@ Emotion check
         {% if forloop.counter0 == 3 %}
             <h2 style="color:red" class="centered_item negative">Most negative sentences:</h2>
         {% endif %}
-            <!-- <div id="content"> -->{% if forloop.counter0 < 3 %}
+            {% if forloop.counter0 < 3 %}
                 <div class="testimonial positive centered_item">
             {% else %}
                 <div class="testimonial negative centered_item">

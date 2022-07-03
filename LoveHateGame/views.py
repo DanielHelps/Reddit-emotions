@@ -4,7 +4,7 @@ from main.models import TrainData, TrainIps, ImportantVars
 from django.db.models import Q
 import datetime
 import time
-from .tasks import add, get_training_post, get_async_next_post, get_next_post_update
+from .tasks import get_next_post_update
 # Create your views here.
 
 global train_post, next_train_post, next_author, next_subreddit
@@ -34,18 +34,18 @@ def train_emot_click(request, ip_str):
     post.save()
 
 
-def get_next_post(ip_str, max_answers, next_train_post, next_author, next_subreddit):
-    try:
-        if 'ip_obj' not in locals():
-            ip_obj = TrainIps.objects.get(ip=ip_str)
-        # Searching for existing post with <3 answers and without the current IP
-        post = TrainData.objects.filter(~Q(train_ips=ip_obj), times_answered__lt = max_answers)[0]
-        return post
-    except:
-        train_post, author, subreddit = next_train_post, next_author, next_subreddit
-        new_post = TrainData(post_title=train_post, author=author, subreddit=subreddit, date=datetime.datetime.now())
-        new_post.save()
-        return new_post
+# def get_next_post(ip_str, max_answers, next_train_post, next_author, next_subreddit):
+#     try:
+#         if 'ip_obj' not in locals():
+#             ip_obj = TrainIps.objects.get(ip=ip_str)
+#         # Searching for existing post with <3 answers and without the current IP
+#         post = TrainData.objects.filter(~Q(train_ips=ip_obj), times_answered__lt = max_answers)[0]
+#         return post
+#     except:
+#         train_post, author, subreddit = next_train_post, next_author, next_subreddit
+#         new_post = TrainData(post_title=train_post, author=author, subreddit=subreddit, date=datetime.datetime.now())
+#         new_post.save()
+#         return new_post
 
 
 def train(request):
@@ -68,9 +68,8 @@ def train(request):
         next_train_post, next_author, next_subreddit = get_next_post_update(request.META.get('HTTP_X_FORWARDED_FOR'), request.META.get('REMOTE_ADDR'), current_train_post=train_post)
     
     ip_obj = TrainIps.objects.get(ip=ip_str)
-    # if a
-    # while a.state != "SUCCESS":
-    #     time.sleep(0.1)
+
+
     a = get_next_post_update.delay(request.META.get('HTTP_X_FORWARDED_FOR'), request.META.get('REMOTE_ADDR'), next_train_post)
     while True:
         try:
@@ -86,52 +85,6 @@ def train(request):
         # next_train_post, next_author, next_subreddit = next_post.post_title, next_post.author, next_post.subreddit
         train_post, author, subreddit = next_post.post_title, next_post.author, next_post.subreddit
 
-    # next_post.
-    # new_post = res.get()
-    # next_train_post, next_author, next_subreddit = res.get()
-    
-    # if request.method == "GET":
-    #     res = get_training_post(request.META.get('HTTP_X_FORWARDED_FOR'), request.META.get('REMOTE_ADDR'), request.POST.get("train_button"), request.method, train_post)
-        
-    # else:
-    #     res = get_training_post.delay(request.META.get('HTTP_X_FORWARDED_FOR'), request.META.get('REMOTE_ADDR'), request.POST.get("train_button"), request.method, train_post)
-    # #################################
-    
-    
-    
-    # if request.method == "POST":
-    #     train_emot_click(request, ip_str)
-
-    # next_post = get_next_post(ip_str, max_answers, next_train_post, next_author, next_subreddit)
-    # try:
-    #     if 'ip_obj' not in locals():
-    #         ip_obj = TrainIps.objects.get(ip=ip_str)
-    #     # print(TrainData.train_ips.through.objects.all())
-    #     post = TrainData.objects.filter(~Q(train_ips=ip_obj), times_answered__lt = max_answers)[0]
-    # except:
-    # async_random_post(ip_str, max_answers)
-        
-        # train_post, author, subreddit = get_random_post()
-        # ########
-        # # author = "sdfsdf"
-        # # subreddit = "sdfff"
-        # # train_post = str(add.delay(1,10))
-        # #########
-        # new_post = TrainData(post_title=train_post, author=author, subreddit=subreddit, date=datetime.datetime.now())
-        # new_post.save()
-    # else:
-        # train_post = post.post_title
-        # author = post.author
-        # subreddit = post.subreddit
-    
-    #######################
-
-    
-    # train_post = next_post.post_title
-    # author = next_post.author
-    # subreddit = next_post.subreddit
-    # res = get_training_post.delay(request.META.get('HTTP_X_FORWARDED_FOR'), request.META.get('REMOTE_ADDR'), request.POST.get("train_button"), request.method)
-    # train_post, author, subreddit = res.get()
     return render(request, "LoveHateGame/train.html", {"post_title": train_post, "author":author, "subreddit":subreddit})
         
     

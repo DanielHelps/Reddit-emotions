@@ -1,29 +1,26 @@
-from ssl import Purpose
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import Emotion_Search
 from . import emotion_check
-from .models import SearchQ, ImportantVars, Sentence, TrainData, Classifier
+from .models import SearchQ, ImportantVars, Sentence, TrainData
 import datetime
-from LoveHateGame import train
-from LoveHateGame.tasks import weekly_training
-from .classifier_functions import main_training
+from LoveHateGame.train import add_pos_neg_sens
 import datetime
 
 
 
-def check_today_training(latest_classifier):
-        try:
-                train_date = ImportantVars.objects.filter(purpose="last_trained_date")[0]
-        except IndexError:
-                train.train_today(latest_classifier)
-                t = ImportantVars(date=datetime.date.today(), purpose="last_trained_date")
-                t.save()
-        else:
-                if train_date.date != datetime.date.today():
-                        train.train_today()
-                        train_date.date = datetime.date.today()
-                        train_date.save()
+# def check_today_training(latest_classifier):
+#         try:
+#                 train_date = ImportantVars.objects.filter(purpose="last_trained_date")[0]
+#         except IndexError:
+#                 train.train_today(latest_classifier)
+#                 t = ImportantVars(date=datetime.date.today(), purpose="last_trained_date")
+#                 t.save()
+#         else:
+#                 if train_date.date != datetime.date.today():
+#                         train.train_today()
+#                         train_date.date = datetime.date.today()
+#                         train_date.save()
                         
                
 def get_pos_neg_sens(search: SearchQ):
@@ -41,28 +38,9 @@ def get_training_data():
         return positive_data, negative_data
         
 
-
 def home(request):
         
-        # weekly_training(3)
-        # pos_data, neg_data = get_training_data()
-        # if classifier_date != datetime.datetime.date(datetime.datetime.now()):
-        # try:
-        #         date_today = datetime.datetime.date(datetime.datetime.now())
-        #         trained_today = ImportantVars.objects.get(purpose="Most updated classifier").date == date_today
-        # except:
-        #         latest_classifier, classifier_date = main_training(pos_data, neg_data)
-        #         most_recent_classifier = ImportantVars(date = classifier_date, purpose = "Most updated classifier")
-        #         most_recent_classifier.save()
-        # else:
-        #         if not trained_today:
-        #                 latest_classifier, classifier_date = main_training(pos_data, neg_data)
-        #                 a = ImportantVars.objects.get(purpose = "Most updated classifier")
-        #                 a.date = date_today
-        #                 a.save()
-        #         latest_classifier = f'classifier_{date_today}.pickle'
-        
-        
+       
         if request.GET.get("search_but"):
                 emot_search = Emotion_Search(request.GET)
                 if emot_search.is_valid():
@@ -88,12 +66,6 @@ def home(request):
 def emotion_check_view(request, query, id):
         emot_search = Emotion_Search()
         
-        # (scores, common_subs) = emotion_check.main(query)
-        # if len(list(SearchQ.objects.filter(query=query))) > 1:
-        #         last_search = list(SearchQ.objects.filter(query=query))[len(list(SearchQ.objects.filter(query=query)))-2] 
-        #         # days_difference = (last_search.date - datetime.datetime.now()).days
-        #         # if abs(days_difference) < 7:
-        #         return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : last_search.score})
         score, most_positive, most_negative = emotion_check.main(query)
         search_obj = SearchQ.objects.filter(id=id)[0]
         if score is not None:
@@ -102,21 +74,22 @@ def emotion_check_view(request, query, id):
                 score = None
         search_obj.date = datetime.datetime.now()
         
-        for sentence in most_positive:
-                if len(search_obj.most_positive.all()) < 3:
-                        sen = Sentence(sentence=sentence[0], sentence_score=round(sentence[1],2))
-                        sen.save()
-                        search_obj.most_positive.add(sen)
-        for sentence in most_negative:
-                if len(search_obj.most_negative.all()) < 3:
-                        sen = Sentence(sentence=sentence[0], sentence_score=round(sentence[1],2))
-                        sen.save()
-                        search_obj.most_negative.add(sen)
+        # for sentence in most_positive:
+        #         if len(search_obj.most_positive.all()) < 3:
+        #                 sen = Sentence(sentence=sentence[0], sentence_score=round(sentence[1],2))
+        #                 sen.save()
+        #                 search_obj.most_positive.add(sen)
+        # for sentence in most_negative:
+        #         if len(search_obj.most_negative.all()) < 3:
+        #                 sen = Sentence(sentence=sentence[0], sentence_score=round(sentence[1],2))
+        #                 sen.save()
+        #                 search_obj.most_negative.add(sen)
                 
+        add_pos_neg_sens(search_obj, most_positive+most_negative)
+        
         search_obj.save()
         sentences = get_pos_neg_sens(search_obj)
 
-        # return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : score, "common_subs": common_subs})
         return render(request, "main/emotion_check.html", {"query": query, "emot_search": emot_search, "score" : score, "sentences" : sentences})
         
         

@@ -256,6 +256,35 @@ body{
         /* transform: rotate(0deg)} */
 }
 
+@media only screen and (max-width: 1500px) {
+  body{
+    /* background-color: #42440c; */
+    
+      padding-top: 50px;
+      color: #262730;
+      background-image: 
+      linear-gradient(rgb(239, 240, 209,1), rgb(239, 240, 209,1)),
+      url("both_halves.jpg");
+      background-repeat: 
+      no-repeat,
+      no-repeat;
+      background-position: 
+      center,
+      center; 
+      background-attachment:
+      fixed,
+      fixed;
+      background-size:
+      40% 100%,
+      100% 100%;
+      opacity:
+      1,
+      1;
+      
+  
+  }
+}
+
 @media only screen and (max-width: 767px){
   
 

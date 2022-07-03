@@ -168,7 +168,7 @@ def get_oauth():
     return headers
 
 async def by_aiohttp_concurrency(total, params, current_time, month_time):
-    # use aiohttp
+    
     titles = []
     session=aiohttp.ClientSession()
     tasks = []

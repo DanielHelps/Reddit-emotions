@@ -61,5 +61,7 @@ Project roadmap:
 - [ ] Adding benefits to registered users
 
 
-![Desktop-2022 07 06-10 41 21 09](https://user-images.githubusercontent.com/101622750/177497138-40d44412-cd2a-4830-8df6-5bffcaf6c19b.gif)
+![Desktop-2022 07 06-10 41 21 09](https://gifyu.com/image/SKIL1)
+![Desktop-2022 07 06-10 41 21 09 (1)](https://user-images.githubusercontent.com/101622750/177497582-706c5265-9116-4fe7-b9b6-93b9acc8ed2e.gif)
+![train gif](https://user-images.githubusercontent.com/101622750/177499347-77b82f2f-308b-46a5-8171-bf3fd2dfc2f2.gif)
 

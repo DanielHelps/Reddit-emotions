@@ -91,18 +91,6 @@ def emotion_check_view(request, query, id):
         else:
                 score = None
         search_obj.date = datetime.datetime.now()
-        
-        # for sentence in most_positive:
-        #         if len(search_obj.most_positive.all()) < 3:
-        #                 sen = Sentence(sentence=sentence[0], sentence_score=round(sentence[1],2))
-        #                 sen.save()
-        #                 search_obj.most_positive.add(sen)
-        # for sentence in most_negative:
-        #         if len(search_obj.most_negative.all()) < 3:
-        #                 sen = Sentence(sentence=sentence[0], sentence_score=round(sentence[1],2))
-        #                 sen.save()
-        #                 search_obj.most_negative.add(sen)
-                
         add_pos_neg_sens(search_obj, most_positive+most_negative)
         
         search_obj.save()

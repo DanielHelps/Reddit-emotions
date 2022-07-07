@@ -120,14 +120,10 @@ def main_training(extra_positive_data=[], extra_negative_data=[]):
 
     neg_tweets = twitter_samples.strings('negative_tweets.json')
     neg_tweets += extra_negative_data
-    # neg_tweets_exp_count = [find_expressions(tweet, sad_expressions) for tweet in neg_tweets]
-    # neg_tweets = [remove_tweet_unwanted(tweet) for tweet in neg_tweets]
+
 
     pos_tweets = twitter_samples.strings('positive_tweets.json')
     pos_tweets += extra_positive_data
-    # pos_tweets_exp_count = [find_expressions(tweet, happy_expressions) for tweet in pos_tweets]
-    # pos_tweets = [remove_tweet_unwanted(tweet) for tweet in pos_tweets]
-
     all_tweets = neg_tweets + pos_tweets
     neg_tweet_words = []
     pos_tweet_words = []
@@ -157,8 +153,6 @@ def main_training(extra_positive_data=[], extra_negative_data=[]):
 
     shuffle(all_tweets)
 
-    # for i in range(0,len(tweet_samp)): is_correct(tweet_samp[i],check_positive(tweet_samp[i]),pos_tweets)
-    # print(f"Accuracy is: {counter/len(tweet_samp)}%")
 
     features = [
         (extract_features(tweet,top_100_positive,top_100_negative, sia),"pos")

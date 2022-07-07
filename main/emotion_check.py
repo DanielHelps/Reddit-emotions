@@ -59,13 +59,22 @@ def check_sentence_list(method: str, sentence_list: list, sentence: tuple) -> li
 def classify_text(text: str, classifier, top_100_neg: list, top_100_pos: list, sia, count: int, pos_count: int, most_positive: list, most_negative: list) -> \
 tuple[int, int]:
     features = extract_features(text, top_100_pos, top_100_neg, sia)
-    min_mean_compound = 0.4
+    min_mean_compound = 0.2
     if abs(features["mean_compound"]) > min_mean_compound:
-        print(text)
-        print(features)
+        pos_or_neg = classifier.classify(extract_features(text, top_100_pos, top_100_neg, sia))
+        print(text, f'!!!!!!{pos_or_neg.upper()}!!!!!!')
         count += 1
-        if features["mean_compound"] > 0 or features["mean_positive"] > 0.2:
+        if  pos_or_neg == 'pos':
             pos_count += 1
+
+    
+    # min_mean_compound = 0.4
+    # if abs(features["mean_compound"]) > min_mean_compound:
+    #     print(text)
+    #     print(features)
+    #     count += 1
+    #     if features["mean_compound"] > 0 or features["mean_positive"] > 0.2:
+    #         pos_count += 1
     check_sentence_list("positive",most_positive,(text, features["mean_compound"]))
     check_sentence_list("negative",most_negative,(text, features["mean_compound"]))
     pass
@@ -162,20 +171,20 @@ def main(search_query):
     classifier = Classifier.objects.latest('classifier_date').classifier_obj
     top_100_neg, top_100_pos = import_top_100()
     sia = SentimentIntensityAnalyzer()
-    search_term = search_query
-    sort_type = "top"
-    time_span = "month"
-    parameters = {"restrict_sr": False, "limit": 100, "sort": sort_type, "q": search_term, "t": time_span}
+    # search_term = search_query
+    # sort_type = "top"
+    # time_span = "month"
+    # parameters = {"restrict_sr": False, "limit": 100, "sort": sort_type, "q": search_term, "t": time_span}
     start_time = time.time()
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    results = []
+    # asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    # results = []
 
     current_time = int(time.time())
-    month_time = 2592000
+    month_seconds = 2592000
     results = []
-    parameters = {"limit": 100, "sort": "top", "q": search_query}
+    parameters = {"limit": 100,"sort":"desc", "sort_type": "score", "title":search_query}
     total = 10
-    results = asyncio.run(by_aiohttp_concurrency(total,parameters,current_time,month_time))
+    results = asyncio.run(by_aiohttp_concurrency(total, parameters, current_time, month_seconds))
     print("--- It took %s seconds ---" % (time.time() - start_time))
 
     most_positive = []

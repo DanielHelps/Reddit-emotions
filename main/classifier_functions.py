@@ -1,20 +1,6 @@
 import re
-import pickle
 import datetime
-# from .models import Classifier
-import nltk
-# from nltk.sentiment import SentimentIntensityAnalyzer
-# from nltk.corpus import twitter_samples
-from random import shuffle
-# import re
-# from statistics import mean
-    
-def initialize():
-    import nltk
-    from nltk.sentiment import SentimentIntensityAnalyzer
-    import re
-    sia = SentimentIntensityAnalyzer()
-    from statistics import mean
+
 
 
 def is_wanted(word_tag_tuple: tuple) -> bool:
@@ -193,8 +179,6 @@ def main_training(extra_positive_data=[], extra_negative_data=[]):
     classifier_name = f'classifier_{date}.pickle'
     a = Classifier(classifier_obj=classifier, classifier_date=date)
     a.save()
-    # f = open(classifier_name, 'wb')
-    # pickle.dump(classifier, f)
-    # f.close()
+
     return classifier_name, date
     

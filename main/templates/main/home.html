@@ -9,15 +9,6 @@
 
 {% block content %}
 
-    <!-- {% comment %} <form method="GET" action="/" class="form-group">
-        {% csrf_token %}
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-            {{emot_search | crispy}}
-            </div>
-            <button name="search_but" type="submit" value="clicked" class="btn btn-success">Search</button>
-        </div>
-    </form> {% endcomment %} -->
 
     <div class="grid-container">
         <div class="search-item">   
@@ -25,14 +16,10 @@
                 <span class="min_width_elem">
                     <form  method="GET">
                         {% csrf_token %}
-                        <!-- {% comment %} <span class="pr-5"> {% endcomment %} -->
                         {{emot_search | crispy}}
-                        <!-- {% comment %} </span> {% endcomment %} -->
-                        <!-- {% comment %} <button name="search_but" value="clicked" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %} -->
                         <button name="search_but" value="clicked" type="submit" formaction="/" class="btn btn-primary mb-2 btnFetch">Search</button>
                     </form>
                       
-                    <!-- <span style="font-size: 20px;">How does it work?</span>   -->
                     <span id="explain_button">
                         <button type="button" class="btn btn-info btn-sm"><a href="#explanation" id="explain_button">How does it work?</a></button>
                     </span>
@@ -58,7 +45,7 @@
         <div id="explanation" class="grid-explain">
             <h2>What's happening here?</h2>
             <p>
-                Reddit emotions is a website that shows the feelings of reddit towards different subjects.<br>
+                Reddit emotions is a website that shows the feelings of Reddit towards different subjects.<br>
                 For a selected search term, an advanced machine learning algorithm calculates the "positivity score", 
                 based on hundreds of search results for this term.<br>
                 Each result is given a score to indicate how positive (or negative) it is, and all the scores are 
@@ -73,10 +60,10 @@
             <h2>Should I register? What's the deal with that?</h2>
             <p>
                 As a logged user, you will be able see past searches you performed and their scores.<br>
-                I will also add more benefits to registered users, that will apply retroactively, so registering
+                I will also add more benefits for registered users, which will apply retroactively, so registering
                 now can actually benefit you in the future :)
             </p>
-            <h2>Nice background! where is it from?</h2>
+            <h2>Nice background! Where is it from?</h2>
             <p>
                 Thanks! Credit to the background goes to redditor <a href="https://www.reddit.com/user/drusinow2/">@drusinow2</a> who created it.
             </p>

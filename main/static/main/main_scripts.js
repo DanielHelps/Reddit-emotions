@@ -30,7 +30,7 @@ $(document).ready(function(){
       // } else {
       //   var fixed_change = 50;
       // }
-      
+     
       if (($(window).scrollTop()+2+50 >= explain_pos) ||  (window.innerHeight + window.scrollY) >= (document.body.offsetHeight) ) {
         // alert("nicee")
         // $('#explanation').css('opacity') = '1';;

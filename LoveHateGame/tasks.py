@@ -34,8 +34,8 @@ def get_next_post_update(x_forwarded_for: str, REMOTE_ADDR: str, current_train_p
     """Gets the next post to display in the "train" section
 
     Args:
-        x_forwarded_for (str): response.META["x_forwarded_for"]
-        REMOTE_ADDR (str): response.META["REMOTE_ADDR"] - remote address of the computer accessing this function
+        x_forwarded_for (str): string the includes the real client's Ip + proxy IPs
+        REMOTE_ADDR (str): response.META["REMOTE_ADDR"] - IP of the client accessing this function (if not accessing through a proxy IP)
         current_train_post (str): string of the currently displaying train post
         max_answers (int, optional): Max allowed answers for a train post. Only presents posts with less than this amount.
         If no posts with less amount of this exists, creates a new random post. Defaults to ImportantVars.objects.get(purpose="max answers").value.
@@ -52,18 +52,25 @@ def get_next_post_update(x_forwarded_for: str, REMOTE_ADDR: str, current_train_p
             except:
                 ip_obj = TrainIps(ip=ip_str)
                 ip_obj.save()
+        # Reminder to delete print statements
         print(f"Current train post: {current_train_post}")
+        # Search for the next train post in the database that fulfills the following requirements -
+        # - IP of client accessing the function did not already answer this train post
+        # - The post was answered less than "max_answers" amount of times (default 3)
+        # - The post title is NOT the title of the current train post being displayed
         post = TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=current_train_post), times_answered__lt = max_answers)[1]
         print("1111111111111111111111")
         print(post.post_title, post.author, post.subreddit)
         return post.post_title, post.author, post.subreddit
-    except:
+    except: 
+        #If next train post does not exist in database, create one by getting a random post from reddit and push it to database
         train_post, author, subreddit = get_random_post()
         new_post = TrainData(post_title=train_post, author=author, subreddit=subreddit, date=datetime.datetime.now())
         new_post.save()
         print("2222222222222222222222")
         print(new_post.post_title, new_post.author, new_post.subreddit )
         print(f"number of next posts: {len(TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=current_train_post), times_answered__lt = max_answers))}")
+        # Already create the next train post so it will be immediately avaliable
         if len(TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=current_train_post), times_answered__lt = max_answers)) < 2:
             extra_train_post, extra_author, extra_subreddit = get_random_post()
             extra_new_post = TrainData(post_title=extra_train_post, author=extra_author, subreddit=extra_subreddit, date=datetime.datetime.now())
@@ -90,7 +97,7 @@ def daily_training():
     """    
     try:
         train_day = ImportantVars.objects.filter(purpose="last_trained_date")[0]
-    except IndexError:
+    except IndexError: # If train_day variable does not exists (maybe deleted, or first training session)
         top_searches_train()
         t = ImportantVars(date=datetime.date.today(), purpose="last_trained_date")
         t.save()

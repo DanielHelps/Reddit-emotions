@@ -12,32 +12,26 @@
 
 {% block content %}
 
-<!-- <span class="grid-container">
-    <span class="centralized-item"> -->
-                
-        <span id ="loading_bar" class="spinner-border centered_item" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </span>
+<span id ="loading_bar" class="spinner-border centered_item" role="status">
+    <span class="visually-hidden">Loading...</span>
+</span>
 
-        <div id="contents">
-            <div class="testimonial centered_item">
-               
-                <blockquote>
-                    {{post_title}}
-                </blockquote>
-                
-                <div></div>
-                <p>
-                    
-                    {{author}} &mdash; {{subreddit}}
-                </p>
-                
-            </div>
-        </div>
-
+<div id="contents">
+    <div class="testimonial centered_item">
         
-    <!-- </span> -->
-<!-- </span> -->
+        <blockquote>
+            {{post_title}}
+        </blockquote>
+        
+        <div></div>
+        <p>
+            
+            {{author}} &mdash; {{subreddit}}
+        </p>
+        
+    </div>
+</div>
+
 {% endblock %}
 {% block content_2 %}
 <span id="emot_buttons" class="grid-container">

@@ -35,18 +35,17 @@ Emotion check
                 <div class="testimonial negative centered_item">
             {% endif %}
                 
-                    <blockquote>
-                        {{a.sentence}} <br>
-                        {% if forloop.counter0 <= 2 %}
-                            <h4 class="pos_score">Score: {{a.sentence_score}}</h4>
-                        {% else %}
-                            <h4 class="neg_score">Score: {{a.sentence_score}}</h4>
-                        {% endif %}
-                    </blockquote>
-                    <div></div>
+                <blockquote>
+                    {{a.sentence}} <br>
+                    {% if forloop.counter0 <= 2 %}
+                        <h4 class="pos_score">Score: {{a.sentence_score}}</h4>
+                    {% else %}
+                        <h4 class="neg_score">Score: {{a.sentence_score}}</h4>
+                    {% endif %}
+                </blockquote>
+                <div></div>
 
                 </div>
-            <!-- </div> -->
         {% endfor %}
 
 

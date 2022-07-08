@@ -2,27 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import Emotion_Search
 from . import emotion_check
-from .models import SearchQ, ImportantVars, Sentence, TrainData
+from .models import SearchQ, ImportantVars, TrainData
 import datetime
 from LoveHateGame.train import add_pos_neg_sens
 import datetime
 
 
 
-# def check_today_training(latest_classifier):
-#         try:
-#                 train_date = ImportantVars.objects.filter(purpose="last_trained_date")[0]
-#         except IndexError:
-#                 train.train_today(latest_classifier)
-#                 t = ImportantVars(date=datetime.date.today(), purpose="last_trained_date")
-#                 t.save()
-#         else:
-#                 if train_date.date != datetime.date.today():
-#                         train.train_today()
-#                         train_date.date = datetime.date.today()
-#                         train_date.save()
-                        
-               
 def get_pos_neg_sens(search: SearchQ):
         """Receives a search query and returns the most negative and most positive sentences
 
@@ -85,6 +71,7 @@ def emotion_check_view(request, query, id):
         emot_search = Emotion_Search()
         # Perform classification of search term
         score, most_positive, most_negative = emotion_check.main(query)
+        # Get the SearchQ object that was just created
         search_obj = SearchQ.objects.filter(id=id)[0]
         if score is not None:
                 search_obj.score = score
@@ -102,8 +89,10 @@ def emotion_check_view(request, query, id):
 
 def search_requests(request):
         user_id = request.user.id
+        # Get all the searches for this specific user
         searches = SearchQ.objects.filter(user_id=user_id)
         rev_searches = list(searches)
+        # Reverse in order to show from latest to 
         rev_searches.reverse()
         return render(request, "main/search_requests.html", {"searches": rev_searches, "username": request.user.username, "logged_in" : request.user.is_authenticated})
 

@@ -2,6 +2,8 @@
 
 from flask import session
 from nltk.sentiment import SentimentIntensityAnalyzer
+
+from main.models import Classifier
 from .classifier_functions import extract_features
 from requests.auth import HTTPBasicAuth
 import requests
@@ -56,38 +58,43 @@ def check_sentence_list(method: str, sentence_list: list, sentence: tuple) -> li
     return sentence_list
 
 
-def classify_text(text: str, classifier, top_100_neg: list, top_100_pos: list, sia, count: int, pos_count: int, most_positive: list, most_negative: list) -> \
-tuple[int, int]:
+def classify_text(text: str, classifier: Classifier, top_100_neg: list, top_100_pos: list, sia, count: int, pos_count: int, most_positive: list, most_negative: list) -> tuple[int, int, list, list]:
+    """Classfies text as positive or negative. Also checks for the most positive and most negative sentences.
+
+    Args:
+        text (str): text to check
+        classifier (Classifier): classifier object to use in the machine learning algorithm
+        top_100_neg (list): top 100 negative words
+        top_100_pos (list): top 100 positive words
+        sia (sia object): sentiment intesity analyzer object
+        count (int): current count of checked sentences 
+        pos_count (int): current count of positive sentences
+        most_positive (list): list of the current most positive sentences
+        most_negative (list): list of the current most negative sentences
+
+    Returns:
+        tuple[int, int, list, list]: return the new total count and positive count, 
+        also returns the most positive and most negative sentences including the new sentence
+    """    
+    # Extract features from text
     features = extract_features(text, top_100_pos, top_100_neg, sia)
+    # Minimum absolute compound score to take into consideration (otherwise its too close to netural)
     min_mean_compound = 0.2
     if abs(features["mean_compound"]) > min_mean_compound:
+        # Use classifier to decide whether sentence is positive or negative
         pos_or_neg = classifier.classify(extract_features(text, top_100_pos, top_100_neg, sia))
         print(text, f'!!!!!!{pos_or_neg.upper()}!!!!!!')
         count += 1
         if  pos_or_neg == 'pos':
             pos_count += 1
-
+    # Check if sentence is one of the most positive (or negative)
+    if features["mean_compound"] > 0:
+        check_sentence_list("positive",most_positive,(text, features["mean_compound"]))
+    else:
+        check_sentence_list("negative",most_negative,(text, features["mean_compound"]))
     
-    # min_mean_compound = 0.4
-    # if abs(features["mean_compound"]) > min_mean_compound:
-    #     print(text)
-    #     print(features)
-    #     count += 1
-    #     if features["mean_compound"] > 0 or features["mean_positive"] > 0.2:
-    #         pos_count += 1
-    check_sentence_list("positive",most_positive,(text, features["mean_compound"]))
-    check_sentence_list("negative",most_negative,(text, features["mean_compound"]))
-    pass
     return count, pos_count, most_positive, most_negative
 
-
-def get_results_pushshift(param, session):
-    
-    res = session.get("https://api.pushshift.io/reddit/search/submission", params=param)
-    posts = res.json()
-    titles = [x['title'] for x in posts['data']]
-    
-    return titles
 
 def get_random_post() -> list:
     """Generate a random reddit post for training purposes
@@ -117,7 +124,12 @@ async def fetch(session: session, param: dict) -> dict:
         print("got results")
         return await response.json()
     
-def get_oauth():
+def get_oauth() -> dict:
+    """Get authorization from reddit API so the user can fetch a random post
+
+    Returns:
+        dict: headers that include the access token
+    """    
     auth = HTTPBasicAuth('vw-fkwBL0vnxGZ5Ofm5VKw', 'ULkWg9VlM0ObIqI1nDdtdVsFsmTG5Q')
 
     # Pass login method (password), username, and password
@@ -144,18 +156,31 @@ def get_oauth():
 
     return headers
 
-async def by_aiohttp_concurrency(total, params, current_time, month_time):
-    
+async def by_aiohttp_concurrency(total: int, params: dict, current_time: int, month_time: int) -> list:
+    """An asynchronous function that uses a session to call the pushshift API multiple times,
+    each time with different parameters (time range to search) in order to get different results each call.
+    Eventually all results are gathered and returned
+
+    Args:
+        total (int): total amount of times to call the API
+        params (dict): base parameters (not include time range) to use in the call of the API
+        current_time (int): current time in epoch
+        month_time (int): number of seconds in a month
+
+    Returns:
+        list: list of search results for the query in the parameters
+    """    
     titles = []
     session=aiohttp.ClientSession()
     tasks = []
+    # Add a different time range to search in each API call and create a task for it
     for i in range(total):
         start_time = (current_time-(4*i+1)*month_time)
         end_time = (current_time-4*i*month_time)
         params.update({"before":end_time, "after":start_time})
         tasks.append(asyncio.create_task(fetch(session, params)))
 
-
+    # gather all the results from the API calls and close session
     original_result = await asyncio.gather(*tasks)
     await session.close()
     for results_batch in original_result:
@@ -168,27 +193,24 @@ def main(search_query):
     from .models import Classifier
     pos_counter = 0
     total_counter = 0
+    # Import latest classifier
     classifier = Classifier.objects.latest('classifier_date').classifier_obj
     top_100_neg, top_100_pos = import_top_100()
     sia = SentimentIntensityAnalyzer()
-    # search_term = search_query
-    # sort_type = "top"
-    # time_span = "month"
-    # parameters = {"restrict_sr": False, "limit": 100, "sort": sort_type, "q": search_term, "t": time_span}
-    start_time = time.time()
-    # asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    # results = []
+  
 
     current_time = int(time.time())
     month_seconds = 2592000
     results = []
-    parameters = {"limit": 100,"sort":"desc", "sort_type": "score", "title":search_query}
-    total = 10
+    # Create parameters for the pushshift API call
+    parameters = {"limit":100, "sort":"desc", "sort_type":"score", "title":search_query}
+    total = 10 # Total amount of times to call the API
+    # Get results from "total" number of API calls
     results = asyncio.run(by_aiohttp_concurrency(total, parameters, current_time, month_seconds))
-    print("--- It took %s seconds ---" % (time.time() - start_time))
 
     most_positive = []
     most_negative = []
+    # Classify the results as negative/positive and get the most negative/positive sentences
     for result in results:
         total_counter, pos_counter, most_positive, most_negative = classify_text(result, classifier, top_100_neg, top_100_pos, sia,
                                                    total_counter, pos_counter, most_positive, most_negative)
@@ -200,6 +222,7 @@ def main(search_query):
 
         return round(100*pos_counter/total_counter,2), most_positive, most_negative
     else:
+        # If no results were found
         return None, [], []
     
 

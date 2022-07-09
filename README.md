@@ -30,17 +30,17 @@ With your help, as time goes by, the classifier will become more and more accura
 ![Training classifier](https://user-images.githubusercontent.com/101622750/177501430-dece408f-4a22-45cb-a5c9-c61573b94a24.gif)
 
 ## How can I run the code myself?
-After cloning the repo, use the following command to run the server:
+After cloning the repo, use the following command in the terminal to run the server:
 ```
 Python manage.py runserver
 ```
 
-Then you need to run celery for background tasks:
+Then you need to open a second terminal and run celery for background tasks:
 ```
 celery -A reddit_emotions worker -l info --pool=solo
 ```
 
-Finally, you need to run celery beat for the periodic tasks:
+Finally, you need to run celery beat in a third terminal for the periodic tasks:
 ```
 celery -A reddit_emotions beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
 ```
@@ -50,7 +50,7 @@ Then go to the following address:
 http://127.0.0.1:8000/
 ```
 
-If you want the server to be able to run on all IP, run the server using the following command instead:
+If you want the server to listen to all network interfaces (and run it on different addresses at the same time), run the server using the following command instead:
 ```
 Python manage.py runserver 0.0.0.0:8000
 ```

@@ -3,7 +3,6 @@
 from flask import session
 from nltk.sentiment import SentimentIntensityAnalyzer
 
-from main.models import Classifier
 from .classifier_functions import extract_features
 from requests.auth import HTTPBasicAuth
 import requests
@@ -58,7 +57,7 @@ def check_sentence_list(method: str, sentence_list: list, sentence: tuple) -> li
     return sentence_list
 
 
-def classify_text(text: str, classifier: Classifier, top_100_neg: list, top_100_pos: list, sia, count: int, pos_count: int, most_positive: list, most_negative: list) -> tuple[int, int, list, list]:
+def classify_text(text: str, top_100_neg: list, top_100_pos: list, sia, count: int, pos_count: int, most_positive: list, most_negative: list) -> tuple[int, int, list, list]:
     """Classfies text as positive or negative. Also checks for the most positive and most negative sentences.
 
     Args:
@@ -76,6 +75,9 @@ def classify_text(text: str, classifier: Classifier, top_100_neg: list, top_100_
         tuple[int, int, list, list]: return the new total count and positive count, 
         also returns the most positive and most negative sentences including the new sentence
     """    
+    from .models import Classifier
+    classifier = Classifier.objects.latest('classifier_date').classifier_obj
+
     # Extract features from text
     features = extract_features(text, top_100_pos, top_100_neg, sia)
     # Minimum absolute compound score to take into consideration (otherwise its too close to netural)
@@ -190,11 +192,10 @@ async def by_aiohttp_concurrency(total: int, params: dict, current_time: int, mo
 
 
 def main(search_query):
-    from .models import Classifier
+    
     pos_counter = 0
     total_counter = 0
     # Import latest classifier
-    classifier = Classifier.objects.latest('classifier_date').classifier_obj
     top_100_neg, top_100_pos = import_top_100()
     sia = SentimentIntensityAnalyzer()
   
@@ -212,7 +213,7 @@ def main(search_query):
     most_negative = []
     # Classify the results as negative/positive and get the most negative/positive sentences
     for result in results:
-        total_counter, pos_counter, most_positive, most_negative = classify_text(result, classifier, top_100_neg, top_100_pos, sia,
+        total_counter, pos_counter, most_positive, most_negative = classify_text(result, top_100_neg, top_100_pos, sia,
                                                    total_counter, pos_counter, most_positive, most_negative)
 
     if total_counter != 0:

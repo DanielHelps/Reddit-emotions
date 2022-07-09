@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+
 from pathlib import Path
 import os
 from celery.schedules import crontab
@@ -26,11 +27,7 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
 CELERY_CACHE_BACKEND = 'default'
 CELERY_BEAT_SCHEDULE = {
-    # "trying_add":{
-    #     "task": "LoveHateGame.tasks.add",
-    #     "schedule": crontab(minute='*'),
-    #     "args": (3,100),
-    # },
+
     "weekly_training":{
         "task": "LoveHateGame.tasks.weekly_training",
         "schedule": crontab(minute=0, hour=0, day_of_week='tuesday'),
@@ -42,11 +39,6 @@ CELERY_BEAT_SCHEDULE = {
         "args": (),
     },
    
-    # "nightly_top_searches":{
-    #     "task": "LoveHateGame.tasks.weekly_training(3)",
-    #     "schedule": crontab(minute=0, hour=0, day_of_week='sunday'),
-    #     "args": (3),
-    # }
 }
 
 
@@ -82,7 +74,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'LoveHateGame.apps.LovehategameConfig',
     'django_celery_results',
-    'django_celery_beat'
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [

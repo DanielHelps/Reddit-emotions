@@ -122,18 +122,8 @@ def extract_features(text: str, top_100_positive: list, top_100_negative: list, 
 
     return features
 
-# def importing():
-
-#     import nltk
-#     from nltk.sentiment import SentimentIntensityAnalyzer
-#     from nltk.corpus import twitter_samples
-#     from random import shuffle
-#     import re
-#     from statistics import mean
-#     from .models import Classifier
     
 def main_training(extra_positive_data=[], extra_negative_data=[]):
-    # importing()
     
     import nltk
     from nltk.sentiment import SentimentIntensityAnalyzer

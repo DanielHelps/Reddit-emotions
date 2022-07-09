@@ -9,7 +9,7 @@ def add_pos_neg_sens(search_obj: SearchQ, sentences: list):
 
         Args:
             search_obj (SearchQ): the search query object to link the sentences to
-            sentences (list): list of 6 sentences (3 positive + 3 negative)
+            sentences (list): list of tuples of 6 sentences (3 positive + 3 negative) - form of tuple - (sentence-str, sentence_score-int)
         """        
         for sentence in sentences[0:3]:
                 if len(search_obj.most_positive.all()) < 3:
@@ -23,6 +23,7 @@ def add_pos_neg_sens(search_obj: SearchQ, sentences: list):
                         sen = Sentence(sentence=sentence[0], sentence_score=round(sentence[1],2))
                         sen.save()
                         search_obj.most_negative.add(sen)
+        
 
 
 def top_searches_train():

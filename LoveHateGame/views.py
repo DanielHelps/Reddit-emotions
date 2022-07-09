@@ -27,13 +27,22 @@ def get_client_ip(request) -> str:
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-def train_emot_click(request, ip_str):
+def train_emot_click(request, ip_str: str):
+    """A function that is called after one of the train emotion buttons were clicked. It updates the train sentence
+    with the value of the button that was clicked, and links the sentence to the IP of the client so the sentence
+    won't appear again for the user
+
+    Args:
+        request (request): request object containing the data which button was clicked
+        ip_str (str): the IP address of the client
+    """    
     post = TrainData.objects.filter(post_title=train_post)[0]
     post.times_answered += 1
     # Add the value of the button that was pressed to the total value:
     # positive = +1, neurtal = 0, negative = -1
     post.positive_score += int(request.POST.get("train_button"))
     try:
+        # Link IP to the train sentence
         ip_obj = TrainIps.objects.get(ip=ip_str)
     except:
         # If IP is not in the database

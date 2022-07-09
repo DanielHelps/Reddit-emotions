@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from .forms import RegisterForm
 
-# Create your views here.
 def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
@@ -10,7 +9,7 @@ def register(request):
             form.save()
             user = authenticate(username=request.POST["username"], password=request.POST["password1"])
             login(request, user)
-
+            # Redirect to home page after registering
             return redirect("/")
         
     else:

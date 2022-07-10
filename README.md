@@ -30,12 +30,18 @@ With your help, as time goes by, the classifier will become more and more accura
 ![Training classifier](https://user-images.githubusercontent.com/101622750/177501430-dece408f-4a22-45cb-a5c9-c61573b94a24.gif)
 
 ## How can I run the code myself?
-After cloning the repo, use the following command in the terminal to run the server:
+After cloning the repo, create the venv and install requirements. Then, download the nltk lexicon using the following commands in the shell:
+```
+$ import nltk
+$ nltk.download('vader_lexicon')
+```
+
+Then use the following command in the terminal to run the server:
 ```
 Python manage.py runserver
 ```
 
-Then you need to open a second terminal and run celery for background tasks:
+After that you need to open a second terminal and run celery for background tasks:
 ```
 celery -A reddit_emotions worker -l info --pool=solo
 ```

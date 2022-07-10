@@ -62,7 +62,6 @@ def classify_text(text: str, top_100_neg: list, top_100_pos: list, sia, count: i
 
     Args:
         text (str): text to check
-        classifier (Classifier): classifier object to use in the machine learning algorithm
         top_100_neg (list): top 100 negative words
         top_100_pos (list): top 100 positive words
         sia (sia object): sentiment intesity analyzer object

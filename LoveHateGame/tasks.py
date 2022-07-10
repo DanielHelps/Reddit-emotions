@@ -30,7 +30,7 @@ def get_client_ip(x_forwarded_for: str, REMOTE_ADDR: str) -> str:
     return ip
 
 @shared_task
-def get_next_post_update(x_forwarded_for: str, REMOTE_ADDR: str, current_train_post: str, max_answers: int =ImportantVars.objects.get(purpose="max answers").value) -> str:
+def get_next_post_update(x_forwarded_for: str, REMOTE_ADDR: str, current_train_post: str) -> str:
     """Gets the next post to display in the "train" section
 
     Args:
@@ -44,6 +44,11 @@ def get_next_post_update(x_forwarded_for: str, REMOTE_ADDR: str, current_train_p
         post_title, author, subreddit of next post
     """
     ip_str = get_client_ip(x_forwarded_for, REMOTE_ADDR)
+    
+    try:
+        max_answers = ImportantVars.objects.get(purpose="max answers").value
+    except:
+        max_answers = 3
     
     try:
         if 'ip_obj' not in locals():

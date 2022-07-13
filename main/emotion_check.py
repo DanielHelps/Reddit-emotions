@@ -3,7 +3,7 @@
 from flask import session
 from nltk.sentiment import SentimentIntensityAnalyzer
 
-from .classifier_functions import extract_features
+from .classifier_functions import extract_features, main_training
 from requests.auth import HTTPBasicAuth
 import requests
 import time
@@ -75,7 +75,11 @@ def classify_text(text: str, top_100_neg: list, top_100_pos: list, sia, count: i
         also returns the most positive and most negative sentences including the new sentence
     """    
     from .models import Classifier
-    classifier = Classifier.objects.latest('classifier_date').classifier_obj
+    try:
+        classifier = Classifier.objects.latest('classifier_date').classifier_obj
+    except:
+        main_training()
+        classifier = Classifier.objects.latest('classifier_date').classifier_obj
 
     # Extract features from text
     features = extract_features(text, top_100_pos, top_100_neg, sia)

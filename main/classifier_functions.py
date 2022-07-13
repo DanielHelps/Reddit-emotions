@@ -123,8 +123,17 @@ def extract_features(text: str, top_100_positive: list, top_100_negative: list, 
     return features
 
     
-def main_training(extra_positive_data=[], extra_negative_data=[]):
-    
+def main_training(extra_positive_data=[], extra_negative_data=[]) -> tuple:
+    """Trains the classifier with the extra positive and negative data from the
+    training section and creates a new updated classifier to use for search
+
+    Args:
+        extra_positive_data (list, optional): new positive data to train the classifier with. Defaults to [].
+        extra_negative_data (list, optional): new negative data to train the classifier with. Defaults to [].
+
+    Returns:
+        tuple: name of new classifier and the date it was classified
+    """    
     import nltk
     from nltk.sentiment import SentimentIntensityAnalyzer
     from nltk.corpus import twitter_samples

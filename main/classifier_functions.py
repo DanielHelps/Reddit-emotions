@@ -2,7 +2,6 @@ import re
 import datetime
 
 
-
 def is_wanted(word_tag_tuple: tuple) -> bool:
     """A function that checks if word is one of the tagged words (doesn't really contribute to the decision if its a positive or negative),
     and doesn't include it in the training if it is
@@ -101,6 +100,7 @@ def extract_features(text: str, top_100_positive: list, top_100_negative: list, 
     happy_expressions = [":)", ":-)", ":D", "=)", ":]", ":>", ":^)"]
 
     # Tokenize text
+    
     for sentence in nltk.sent_tokenize(text):
         # Get the emoji score
         exp_count += find_expressions(sentence, sad_expressions, happy_expressions)
@@ -140,7 +140,7 @@ def main_training(extra_positive_data=[], extra_negative_data=[]) -> tuple:
     from random import shuffle
     import re
     from statistics import mean
-    from .models import Classifier
+    from .models import Classifier, top_100
     
     
     sia = SentimentIntensityAnalyzer()
@@ -195,6 +195,7 @@ def main_training(extra_positive_data=[], extra_negative_data=[]) -> tuple:
     top_100_positive = {word for word, count in positive_fd.most_common(100)}
     top_100_negative = {word for word, count in negative_fd.most_common(100)}
 
+    
     shuffle(all_tweets)
 
 
@@ -219,7 +220,10 @@ def main_training(extra_positive_data=[], extra_negative_data=[]) -> tuple:
     # Push the new classifier into the database
     classifier_name = f'classifier_{date}.pickle'
     a = Classifier(classifier_obj=classifier, classifier_date=date)
+    b = top_100(top_obj=top_100_positive, pos_date=date)
+    c = top_100(top_obj=top_100_negative, neg_date=date)
     a.save()
-
+    b.save()
+    c.save()
     return classifier_name, date
     

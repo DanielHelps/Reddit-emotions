@@ -18,14 +18,16 @@ def import_top_100() -> list:
     Returns:
         2 lists: top 100 negative and top 100 positive words
     """    
-    import pickle
-    f = open('top_100_neg.pickle', 'rb')
-    top_100_neg = pickle.load(f)
-    f.close()
-    f = open('top_100_pos.pickle', 'rb')
-    top_100_pos = pickle.load(f)
-    f.close()
-    return top_100_neg, top_100_pos
+    from main.models import top_100
+    try:
+        pos_100 = top_100.objects.latest('pos_date').top_obj
+        neg_100 = top_100.objects.latest('neg_date').top_obj
+    except:
+        main_training()
+        pos_100 = top_100.objects.latest('pos_date').top_obj
+        neg_100 = top_100.objects.latest('neg_date').top_obj
+    
+    return neg_100, pos_100
 
 def check_sentence_list(method: str, sentence_list: list, sentence: tuple) -> list:
     """A function that creates a list of the most negative / positive sentences

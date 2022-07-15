@@ -54,3 +54,15 @@ class Classifier(models.Model):
      
     def __str__(self):
         return f'{self.classifier_date} classifier'
+    
+class top_100(models.Model):
+    top_obj = PickledObjectField(null=True)
+    pos_date = models.DateField(null=True)
+    neg_date = models.DateField(null=True)
+    
+    def __str__(self):
+        if self.neg_date == None:
+            return f'{self.pos_date} positive top 100'
+        else:
+            return f'{self.neg_date} negative top 100'
+    

@@ -26,6 +26,7 @@ class HomeViewTestCase(TestCase):
         
     def test_home_no_button_click(self):
         response = self.client.get(self.home_url)
+        
         self.assertEquals(response.status_code, 200)
         
     def test_home_button_click_value_invalid(self):
@@ -33,6 +34,7 @@ class HomeViewTestCase(TestCase):
         response = self.client.get(self.home_url, {
             'search_but':'clicked'
         })
+        
         self.assertEqual(str(response.content), "b'Problem, go back!'")
         
     def test_home_button_click_value_valid_not_in_db(self):
@@ -65,14 +67,8 @@ class HomeViewTestCase(TestCase):
         # checks that get_pos_neg_sens works properly
         self.assertEqual(len(get_pos_neg_sens(self.search_obj)),6)
         for i, sentence in enumerate(sorted_sentences[1:3]):
-            # print(i)
-            # print(sentence.sentence_score)
-            # print(sorted_sentences[i].sentence_score)
             self.assertLessEqual(sentence.sentence_score,sorted_sentences[i].sentence_score)    
         for i, sentence in enumerate(sorted_sentences[4:6]):
-            # print(i)
-            # print(sentence.sentence_score)
-            # print(sorted_sentences[i+3].sentence_score)
             self.assertGreaterEqual(sentence.sentence_score,sorted_sentences[i+3].sentence_score)    
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response,'main/emotion_check.html')
@@ -128,7 +124,7 @@ class EmotionCheckFunctionsTestCase(TestCase):
     
     def test_import_top_100(self):
         top_100_negative, top_100_positive  = import_top_100()
-        # self.assert
+        self.assertEqual(len(top_100_negative),100)
         
 
 

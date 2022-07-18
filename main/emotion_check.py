@@ -2,7 +2,6 @@
 
 from flask import session
 from nltk.sentiment import SentimentIntensityAnalyzer
-
 from .classifier_functions import extract_features, main_training
 from requests.auth import HTTPBasicAuth
 import requests
@@ -103,11 +102,11 @@ def classify_text(text: str, top_100_neg: list, top_100_pos: list, sia, count: i
     return count, pos_count, most_positive, most_negative
 
 
-def get_random_post() -> list:
+def get_random_post() -> tuple:
     """Generate a random reddit post for training purposes
 
     Returns:
-        list: random post content, author of the post and subreddit
+        tuple: random post content, author of the post and subreddit
     """    
     headers = get_oauth()
     res = requests.get("https://oauth.reddit.com/random", headers=headers)
@@ -196,42 +195,51 @@ async def by_aiohttp_concurrency(total: int, params: dict, current_time: int, mo
     return titles
 
 
-def main(search_query):
+def main_check(search_query: str) -> tuple:
+    """The main function that gets the emotion score for a search query
+
+    Args:
+        search_query (str): search query to check the score for
+
+    Returns:
+        tuple: emotion score, 3 most positive sentences, 3 most negative sentences
+    """    
+    # print(f'!!!!!!!!!{search_query}!!!!!!!!!!!')
+    if isinstance(search_query, str) and search_query != None and search_query != '':
+        pos_counter = 0
+        total_counter = 0
+        # Import latest top_100
+        top_100_neg, top_100_pos = import_top_100()
+        sia = SentimentIntensityAnalyzer()
     
-    pos_counter = 0
-    total_counter = 0
-    # Import latest classifier
-    top_100_neg, top_100_pos = import_top_100()
-    sia = SentimentIntensityAnalyzer()
-  
 
-    current_time = int(time.time())
-    month_seconds = 2592000
-    results = []
-    # Create parameters for the pushshift API call
-    parameters = {"limit":100, "sort":"desc", "sort_type":"score", "title":search_query}
-    total = 10 # Total amount of times to call the API
-    # Get results from "total" number of API calls
-    results = asyncio.run(by_aiohttp_concurrency(total, parameters, current_time, month_seconds))
+        current_time = int(time.time())
+        month_seconds = 2592000
+        results = []
+        # Create parameters for the pushshift API call
+        parameters = {"limit":100, "sort":"desc", "sort_type":"score", "title":search_query}
+        total = 10 # Total amount of times to call the API
+        # Get results from "total" number of API calls
+        results = asyncio.run(by_aiohttp_concurrency(total, parameters, current_time, month_seconds))
 
-    most_positive = []
-    most_negative = []
-    # Classify the results as negative/positive and get the most negative/positive sentences
-    for result in results:
-        total_counter, pos_counter, most_positive, most_negative = classify_text(result, top_100_neg, top_100_pos, sia,
-                                                   total_counter, pos_counter, most_positive, most_negative)
+        most_positive = []
+        most_negative = []
+        # Classify the results as negative/positive and get the most negative/positive sentences
+        for result in results:
+            total_counter, pos_counter, most_positive, most_negative = classify_text(result, top_100_neg, top_100_pos, sia,
+                                                    total_counter, pos_counter, most_positive, most_negative)
 
-    if total_counter != 0:
-        print(f"Positive score: {round(100*pos_counter/total_counter,2)}%")
-        print(f"Most common subreddits (subreddit, number of mentions):")
-        print("")
+        if total_counter != 0:
+            print(f"Positive score: {round(100*pos_counter/total_counter,2)}%")
+            # print(f"Most common subreddits (subreddit, number of mentions):")
+            # print("")
 
-        return round(100*pos_counter/total_counter,2), most_positive, most_negative
-    else:
-        # If no results were found
-        return None, [], []
+            return round(100*pos_counter/total_counter,2), most_positive, most_negative
+
+        # If no results were found or search query is not string
+    return None, [], []
     
 
 
 if __name__ == '__main__':
-    main()
+    main_check()

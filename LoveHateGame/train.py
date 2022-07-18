@@ -36,7 +36,7 @@ def top_searches_train():
         print(item)
         if list(SearchQ.objects.filter(query=item, date=date_today)) == []:
                 # Classify queries and put into SearchQ objects
-                scores, most_positive, most_negative = emotion_check.main(item)
+                scores, most_positive, most_negative = emotion_check.main_check(item)
                 if  scores[0] is not None:
                         search_obj = SearchQ(query=item, score=int(list(scores)[0]), date = date_today)        
                         add_pos_neg_sens(search_obj, most_positive+most_negative)

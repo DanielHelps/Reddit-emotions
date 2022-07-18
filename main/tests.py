@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 from .classifier_functions import find_expressions
 from django.urls import reverse
 from .forms import Emotion_Search
-from .models import SearchQ, Sentence, Classifier
+from .models import SearchQ, Sentence, Classifier, top_100
 from .views import get_pos_neg_sens
 from .emotion_check import *
 import pickle
@@ -134,18 +134,16 @@ class EmotionCheckFunctionsTestCase(TestCase):
             a = Classifier.objects.create(classifier_obj=classifier, classifier_date=datetime.datetime.now())
             a.save()
         with open('top_100_pos.pickle', 'rb') as f:
-            self.top_100_pos = pickle.load(f)
+            top_100_pos = pickle.load(f)
+            b = top_100.objects.create(top_obj=top_100_pos, pos_date=datetime.datetime.now())
+            b.save()
         with open('top_100_neg.pickle', 'rb') as f:
-            self.top_100_neg = pickle.load(f)
+            top_100_neg = pickle.load(f)
+            c = top_100.objects.create(top_obj=top_100_neg, neg_date=datetime.datetime.now())
+            c.save()
         self.sia = SentimentIntensityAnalyzer()
         # with open('classifier.pickle', 'rb') as f:
         #     classifier = pickle.load(f)
-        
-        
-    
-            
-    
-        
         
     
     # def test_import_top_100(self):
@@ -184,10 +182,11 @@ class EmotionCheckFunctionsTestCase(TestCase):
         neutral_sentence = "neutral sentence"
         count = 0
         pos_count = 0
+        top_100_neg, top_100_pos  = import_top_100()
         
         new_count, new_pos_count, new_pos_sens, new_neg_sens = classify_text(happy_sentence, 
-                        self.top_100_neg,
-                        self.top_100_pos,
+                        top_100_neg,
+                        top_100_pos,
                         self.sia, count,
                         pos_count,
                         self.sentence_list_positive,
@@ -198,8 +197,8 @@ class EmotionCheckFunctionsTestCase(TestCase):
         self.assertIn(happy_sentence, [x[0] for x in new_pos_sens])
 
         new_count, new_pos_count, new_pos_sens, new_neg_sens = classify_text(sad_sentence, 
-                        self.top_100_neg,
-                        self.top_100_pos,
+                        top_100_neg,
+                        top_100_pos,
                         self.sia, count,
                         pos_count,
                         self.sentence_list_positive,
@@ -210,8 +209,8 @@ class EmotionCheckFunctionsTestCase(TestCase):
         self.assertIn(sad_sentence, [x[0] for x in new_neg_sens])
         
         new_count, new_pos_count, new_pos_sens, new_neg_sens = classify_text(neutral_sentence, 
-                        self.top_100_neg,
-                        self.top_100_pos,
+                        top_100_neg,
+                        top_100_pos,
                         self.sia, count,
                         pos_count,
                         self.sentence_list_positive,
@@ -221,26 +220,39 @@ class EmotionCheckFunctionsTestCase(TestCase):
         self.assertNotIn(neutral_sentence, [x[0] for x in new_pos_sens])
         self.assertNotIn(neutral_sentence, [x[0] for x in new_neg_sens])
         
+    def test_random_post(self):
+        title, author, subreddit = get_random_post()
         
-
+        self.assertRegex(title,'.+')
+        self.assertRegex(author,'.+')
+        self.assertRegex(subreddit,'r/.+')
         
-
-    
-    
+        print(title, author, subreddit)
         
-
+    def test_main_emotion_check(self):
+        queries = ['death', 'neutral', 'beautiful', '', 'dsfgdglkhsoqiewrh312', 2]
+        
+        for i, query in enumerate(queries):
+            if i <= 2:
+                score, most_pos, most_neg = main_check(query)
+                self.assertEqual(len(most_pos),3)
+                self.assertEqual(len(most_neg),3)
+                # self.assertEqual(type(score),int)
+                self.assertRegex(str(score), '\d\d\.\d\d|\d\.\d\d')
+            else:
+                self.assertEqual(main_check(query), (None, [], []))
+        
+            
+        
 
 # -------------------------------------------------------------------------
 
-class ExpressionsTestCase(TestCase):
+class ClassifierFunctionsTestCase(TestCase):
 
     def test_expressions_func(self):
-        # result = 10+1
-        # self.assertEqual(result, 1)
         sentence = "WOW i am so happy :)"
         sad_expressions = [":(", ":'(", ":-(", ":'-(", "=("]
         happy_expressions = [":)", ":-)", ":D", "=)", ":]", ":>", ":^)"]
-        """Check edge cases of sentences"""
         self.assertEqual(find_expressions(sentence, sad_expressions, happy_expressions), 1)
 
 

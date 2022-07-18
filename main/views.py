@@ -71,7 +71,7 @@ def home(request):
 def emotion_check_view(request, query, id):
         emot_search = Emotion_Search()
         # Perform classification of search term
-        score, most_positive, most_negative = emotion_check.main(query)
+        score, most_positive, most_negative = emotion_check.main_check(query)
         # Get the SearchQ object that was just created
         search_obj = SearchQ.objects.filter(id=id)[0]
         if score is not None:

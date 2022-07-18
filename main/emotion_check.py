@@ -30,7 +30,7 @@ def import_top_100() -> list:
     return neg_100, pos_100
 
 def check_sentence_list(method: str, sentence_list: list, sentence: tuple) -> list:
-    """A function that creates a list of the most negative / positive sentences
+    """A function that creates a list of the most negative / positive sentences including a sentence to check
 
     Args:
         method (str): "positive" to get the most positive sentences or anything else to get the most negative sentences

@@ -3,9 +3,12 @@ from django.test import TestCase, Client
 from .classifier_functions import find_expressions
 from django.urls import reverse
 from .forms import Emotion_Search
-from .models import SearchQ, Sentence
+from .models import SearchQ, Sentence, Classifier
 from .views import get_pos_neg_sens
 from .emotion_check import *
+import pickle
+import datetime
+from nltk.sentiment import SentimentIntensityAnalyzer
 
 class HomeViewTestCase(TestCase):
     def setUp(self) -> None:
@@ -120,11 +123,110 @@ class SearchRequestsViewTestCase(TestCase):
 
 class EmotionCheckFunctionsTestCase(TestCase):
     def setUp(self):
-        pass
+        self.sentence_list_positive = [("score 0.2", 0.2),
+                         ("score 0.51", 0.51), 
+                         ("score 0.9", 0.9)]
+        self.sentence_list_negative = [("score -0.7", -0.7), 
+                         ("score -0.4", -0.4), 
+                         ("score -0.2", -0.2)]
+        with open('classifier.pickle', 'rb') as f:
+            classifier = pickle.load(f)
+            a = Classifier.objects.create(classifier_obj=classifier, classifier_date=datetime.datetime.now())
+            a.save()
+        with open('top_100_pos.pickle', 'rb') as f:
+            self.top_100_pos = pickle.load(f)
+        with open('top_100_neg.pickle', 'rb') as f:
+            self.top_100_neg = pickle.load(f)
+        self.sia = SentimentIntensityAnalyzer()
+        # with open('classifier.pickle', 'rb') as f:
+        #     classifier = pickle.load(f)
+        
+        
     
-    def test_import_top_100(self):
-        top_100_negative, top_100_positive  = import_top_100()
-        self.assertEqual(len(top_100_negative),100)
+            
+    
+        
+        
+    
+    # def test_import_top_100(self):
+    #     #WARNING - A LONG TEST (~30s) BECAUSE OF API CALLS AND CLASSIFIER CREATION
+    #     top_100_negative, top_100_positive  = import_top_100()
+    #     self.assertEqual(len(top_100_negative),100)
+    #     self.assertEqual(len(top_100_positive),100)
+    
+    def test_check_sentence_list(self):
+        check_sentence_1 = ("sentence to check score 0.1", 0.1)
+        check_sentence_2 = ("sentence to check score 0.5", 0.5)
+        check_sentence_3 = ("sentence to check score 0.99", 0.99)
+        check_sentence_4 = ("sentence to check score -0.1", -0.1)
+        check_sentence_5 = ("sentence to check score -0.3", -0.3)
+        check_sentence_6 = ("sentence to check score -0.9", -0.9)
+        
+        
+        self.assertNotIn(check_sentence_1, check_sentence_list("positive", self.sentence_list_positive, check_sentence_1))
+        self.assertNotIn(check_sentence_1, check_sentence_list("negative", self.sentence_list_negative, check_sentence_1))
+        self.assertIn(check_sentence_2, check_sentence_list("positive", self.sentence_list_positive, check_sentence_2))
+        self.assertNotIn(check_sentence_2, check_sentence_list("negative", self.sentence_list_negative, check_sentence_2))
+        self.assertIn(check_sentence_3, check_sentence_list("positive", self.sentence_list_positive, check_sentence_3))
+        self.assertNotIn(check_sentence_3, check_sentence_list("negative", self.sentence_list_negative, check_sentence_3))
+        self.assertNotIn(check_sentence_4, check_sentence_list("positive", self.sentence_list_positive, check_sentence_4))
+        self.assertNotIn(check_sentence_4, check_sentence_list("negative", self.sentence_list_negative, check_sentence_4))
+        self.assertNotIn(check_sentence_5, check_sentence_list("positive", self.sentence_list_positive, check_sentence_5))
+        self.assertIn(check_sentence_5, check_sentence_list("negative", self.sentence_list_negative, check_sentence_5))
+        self.assertNotIn(check_sentence_6, check_sentence_list("positive", self.sentence_list_positive, check_sentence_6))
+        self.assertIn(check_sentence_6, check_sentence_list("negative", self.sentence_list_negative, check_sentence_6))
+        
+    
+            
+    def test_text_classification(self):
+        happy_sentence = "happy love beautiful"
+        sad_sentence = "horror death war"
+        neutral_sentence = "neutral sentence"
+        count = 0
+        pos_count = 0
+        
+        new_count, new_pos_count, new_pos_sens, new_neg_sens = classify_text(happy_sentence, 
+                        self.top_100_neg,
+                        self.top_100_pos,
+                        self.sia, count,
+                        pos_count,
+                        self.sentence_list_positive,
+                        self.sentence_list_negative)
+        self.assertGreater(new_count, count)
+        self.assertGreater(new_pos_count, pos_count)
+        self.assertNotIn(happy_sentence, [x[0] for x in new_neg_sens])
+        self.assertIn(happy_sentence, [x[0] for x in new_pos_sens])
+
+        new_count, new_pos_count, new_pos_sens, new_neg_sens = classify_text(sad_sentence, 
+                        self.top_100_neg,
+                        self.top_100_pos,
+                        self.sia, count,
+                        pos_count,
+                        self.sentence_list_positive,
+                        self.sentence_list_negative)
+        self.assertGreater(new_count, count)
+        self.assertEqual(new_pos_count, pos_count)
+        self.assertNotIn(sad_sentence, [x[0] for x in new_pos_sens])
+        self.assertIn(sad_sentence, [x[0] for x in new_neg_sens])
+        
+        new_count, new_pos_count, new_pos_sens, new_neg_sens = classify_text(neutral_sentence, 
+                        self.top_100_neg,
+                        self.top_100_pos,
+                        self.sia, count,
+                        pos_count,
+                        self.sentence_list_positive,
+                        self.sentence_list_negative)
+        self.assertEqual(new_count, count)
+        self.assertEqual(new_pos_count, pos_count)
+        self.assertNotIn(neutral_sentence, [x[0] for x in new_pos_sens])
+        self.assertNotIn(neutral_sentence, [x[0] for x in new_neg_sens])
+        
+        
+
+        
+
+    
+    
         
 
 

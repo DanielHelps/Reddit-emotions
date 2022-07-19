@@ -1,11 +1,11 @@
 # from urllib import response
 from django.test import TestCase, Client
-from .classifier_functions import find_expressions
 from django.urls import reverse
 from .forms import Emotion_Search
 from .models import SearchQ, Sentence, Classifier, top_100
 from .views import get_pos_neg_sens
 from .emotion_check import *
+from .classifier_functions import *
 import pickle
 import datetime
 from nltk.sentiment import SentimentIntensityAnalyzer
@@ -229,18 +229,20 @@ class EmotionCheckFunctionsTestCase(TestCase):
         
         print(title, author, subreddit)
         
-    def test_main_emotion_check(self):
-        queries = ['death', 'neutral', 'beautiful', '', 'dsfgdglkhsoqiewrh312', 2]
+    # def test_main_emotion_check(self):
+    # #     #WARNING - A LONG TEST (~20s) BECAUSE OF API CALLS AND CLASSIFIER CREATION
+
+    #     queries = ['death', 'neutral', 'beautiful', '', 'dsfgdglkhsoqiewrh312', 2]
         
-        for i, query in enumerate(queries):
-            if i <= 2:
-                score, most_pos, most_neg = main_check(query)
-                self.assertEqual(len(most_pos),3)
-                self.assertEqual(len(most_neg),3)
-                # self.assertEqual(type(score),int)
-                self.assertRegex(str(score), '\d\d\.\d\d|\d\.\d\d')
-            else:
-                self.assertEqual(main_check(query), (None, [], []))
+    #     for i, query in enumerate(queries):
+    #         if i <= 2:
+    #             score, most_pos, most_neg = main_check(query)
+    #             self.assertEqual(len(most_pos),3)
+    #             self.assertEqual(len(most_neg),3)
+    #             # self.assertEqual(type(score),int)
+    #             self.assertRegex(str(score), '\d\d\.\d\d|\d\.\d\d')
+    #         else:
+    #             self.assertEqual(main_check(query), (None, [], []))
         
             
         
@@ -248,11 +250,70 @@ class EmotionCheckFunctionsTestCase(TestCase):
 # -------------------------------------------------------------------------
 
 class ClassifierFunctionsTestCase(TestCase):
-
+    def setUp(self):
+        with open('top_100_pos.pickle', 'rb') as f:
+            top_100_pos = pickle.load(f)
+            b = top_100.objects.create(top_obj=top_100_pos, pos_date=datetime.datetime.now())
+            b.save()
+        with open('top_100_neg.pickle', 'rb') as f:
+            top_100_neg = pickle.load(f)
+            c = top_100.objects.create(top_obj=top_100_neg, neg_date=datetime.datetime.now())
+            c.save()
+        self.sia = SentimentIntensityAnalyzer()
+    
+    def test_extracting_feature(self):
+        text1 = ""
+        text2 = "love"
+        text3 = "death"
+        text4 = "12!@dsao0)9(+-*/"
+        pos_100 = top_100.objects.latest('pos_date').top_obj
+        neg_100 = top_100.objects.latest('neg_date').top_obj
+        features1 = extract_features(text1, pos_100, neg_100, self.sia)
+        features2 = extract_features(text2, pos_100, neg_100, self.sia)
+        features3 = extract_features(text3, pos_100, neg_100, self.sia)
+        features4 = extract_features(text4, pos_100, neg_100, self.sia)
+        # {'mean_compound': 0.0, 'mean_positive': 0.0, 'pos_wordcount': 0}
+        
+        self.assertIn('mean_compound',features1)
+        self.assertEqual(features1['mean_compound'], 0.0)
+        self.assertIn('mean_positive',features1)
+        self.assertEqual(features1['mean_positive'], 0.0)
+        self.assertIn('pos_wordcount',features1)
+        self.assertEqual(features1['pos_wordcount'], 0)
+        
+        self.assertIn('mean_compound',features2)
+        self.assertGreater(features2['mean_compound'], 0.0)
+        self.assertIn('mean_positive',features2)
+        self.assertGreater(features2['mean_positive'], 0.0)
+        self.assertIn('pos_wordcount',features2)
+        
+        self.assertIn('mean_compound',features3)
+        self.assertLess(features3['mean_compound'], 0.0)
+        self.assertIn('mean_positive',features3)
+        self.assertEqual(features3['mean_positive'], 0.0)
+        self.assertIn('pos_wordcount',features3)
+        self.assertEqual(features3['pos_wordcount'], 0)
+        
+        self.assertIn('mean_compound',features4)
+        self.assertEqual(features4['mean_compound'], 0.0)
+        self.assertIn('mean_positive',features4)
+        self.assertEqual(features4['mean_positive'], 0.0)
+        self.assertIn('pos_wordcount',features4)
+        self.assertEqual(features4['pos_wordcount'], 0)
+        
+    def test_remove_tweet_unwanted(self):
+        tweet1 = 'nice one @daniel '
+        tweet2 = 'nice o n e @daniel '
+        tweet3 = 'https://www.google.com/  nice'
+        tweet4 = 'nice https://www.google.com/@daniel nice'
+        
+        self.assertEqual(remove_tweet_unwanted(tweet1),'nice one  ')
+        self.assertEqual(remove_tweet_unwanted(tweet2),'nice  ')
+        self.assertEqual(remove_tweet_unwanted(tweet3),'  nice')
+        self.assertEqual(remove_tweet_unwanted(tweet4),'nice  nice')
+    
     def test_expressions_func(self):
         sentence = "WOW i am so happy :)"
         sad_expressions = [":(", ":'(", ":-(", ":'-(", "=("]
         happy_expressions = [":)", ":-)", ":D", "=)", ":]", ":>", ":^)"]
         self.assertEqual(find_expressions(sentence, sad_expressions, happy_expressions), 1)
-
-

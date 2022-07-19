@@ -71,7 +71,8 @@ def remove_tweet_unwanted(tweet: str) -> str:
     """    
     updated_tweet = re.sub("@\w+", "", tweet)
     updated_tweet = re.sub("http\S+", "", updated_tweet)
-    updated_tweet = re.sub(" .{1} ", " ", updated_tweet)
+    while re.search(" .{1} ", updated_tweet) != None:
+        updated_tweet = re.sub(" .{1} ", " ", updated_tweet)
     return updated_tweet
 
 
@@ -91,6 +92,8 @@ def extract_features(text: str, top_100_positive: list, top_100_negative: list, 
     import nltk
     from statistics import mean
 
+    if len(text) == 0:
+        return {'mean_compound': 0.0, 'mean_positive': 0.0, 'pos_wordcount': 0}
     features = dict()
     pos_wordcount = 0
     compound_scores = list()

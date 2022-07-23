@@ -24,6 +24,7 @@ def import_top_100() -> list:
     except:
         import nltk
         nltk.downloader.download('vader_lexicon')
+        nltk.download('twitter_samples')
         main_training()
         pos_100 = top_100.objects.latest('pos_date').top_obj
         neg_100 = top_100.objects.latest('neg_date').top_obj

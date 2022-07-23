@@ -188,5 +188,7 @@ CRISPY_TEMPLATE_PACK="bootstrap4"
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+CSRF_TRUSTED_ORIGINS=['https://*redditemotions.herokuapp.com']
+
 import django_on_heroku
 django_on_heroku.settings(locals())

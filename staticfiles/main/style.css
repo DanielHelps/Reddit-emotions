@@ -1,0 +1,274 @@
+html{
+  scroll-padding-top: 50px;
+}
+
+*{
+    margin:0;
+    padding: 0;
+    font-family: 'Arvo', serif;
+    scroll-behavior: smooth;
+}
+
+/* collor pallet */
+/* https://coolors.co/8360c3-2ebf91-ea526f-231123-eff7ff */
+/* https://coolors.co/d33f49-d7c0d0-eff0d1-77ba99-262730  second option */ 
+
+body{  
+    padding-top: 50px;
+    color: #262730;
+    background-image: 
+    linear-gradient(rgb(239, 240, 209,1), rgb(239, 240, 209,1)),
+    url("both_halves.jpg");
+    background-repeat: 
+    no-repeat,
+    no-repeat;
+    background-position: 
+    center,
+    center; 
+    background-attachment:
+    fixed,
+    fixed;
+    background-size:
+    40% 100%,
+    100% auto;
+    opacity:
+    1,
+    1;
+    
+
+}
+
+
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 15% 15% 40% 15% 15%;
+    gap: 0px;
+  }
+
+  .grid-container > .search-item {
+    grid-column-start: 3;
+    text-align: center;
+    padding: 0.5vh 0px;
+    font-size: 30px;
+    width: auto;
+    display: flex;
+    justify-self: center;
+    flex-basis: 100%;
+  }
+
+
+  .min_width_elem{
+    min-width: 20vw;
+  }
+
+  .grid-container > .centralized-item {
+    grid-column: 3 / 4;
+    text-align: center;
+    width: auto;
+    display: flex;
+    justify-self: center;
+    flex-basis: 100%; 
+  }
+
+  .grid-container > .grid-item {
+    text-align: center;
+    padding: 5%;
+  }
+
+  .grid-container > nav {
+    font-size: 1em;
+    grid-column: 1 / span 5;
+  }
+
+  .grid-container > .grid-explain {
+    grid-row: 5;
+    grid-column: 3 / 4;
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid black;
+    text-align: center;
+    opacity: 0;
+  }
+
+
+#dial{
+    position: relative;
+    margin: auto;
+    opacity: 0%;
+    animation: appearing 0.8s ease 0.2s 1 forwards;
+}
+
+#navbar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    animation: comein_down 0.3s ease 0s 1 forwards;
+}
+
+#search_bar{
+    margin: auto;
+    animation: comein_left 0.5s ease 0s 1 forwards;
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+}
+.asteriskField {
+    display: none;
+}
+
+.positive{
+  opacity: 0%;
+  animation: comein_left 0.8s ease 0.5s 1 forwards;
+}
+
+.negative{
+  opacity: 0%;
+  animation: comein_right 0.8s ease 1s 1 forwards;
+}
+
+#explain_button a:link{
+  text-decoration: none
+}
+
+#explain_button a:active{
+  text-decoration: none
+}
+
+#explain_button a{
+  color: #262730
+}
+
+.appear {
+  animation: appearing 0.8s ease 0.2s 1 forwards;
+}
+
+#cute_cat:hover{
+  filter: opacity(50%);
+}
+
+.centered_item{
+  max-width: 40%;
+  
+  margin: 1vh auto;
+}
+
+#explain_anchor{
+    display: block;
+    height: 50px;
+    margin-top: -50px;
+    visibility: hidden;
+}
+
+@keyframes comein_left {
+    from {transform: translateX(-10em);
+        opacity: 0%}
+    to {
+        opacity: 100%}
+}
+
+@keyframes comein_right {
+  from {transform: translateX(10em);
+      opacity: 0%}
+  to {
+      opacity: 100%}
+}
+
+@keyframes appearing {
+    from {
+        opacity: 0%}
+    to {
+        opacity: 100%}
+}
+
+@keyframes comein_down {
+    from {transform: translateY(-10em);
+        opacity: 0%}
+    to {
+        opacity: 100%}
+}
+
+@media only screen and (max-width: 1500px) {
+  body{   
+      padding-top: 50px;
+      color: #262730;
+      background-image: 
+      linear-gradient(rgb(239, 240, 209,1), rgb(239, 240, 209,1)),
+      url("both_halves.jpg");
+      background-repeat: 
+      no-repeat,
+      no-repeat;
+      background-position: 
+      center,
+      center; 
+      background-attachment:
+      fixed,
+      fixed;
+      background-size:
+      40% 100%,
+      100% 100%;
+      opacity:
+      1,
+      1;
+      
+  
+  }
+}
+
+@media only screen and (max-width: 767px){
+  
+
+  body{
+    
+      color: #302926;
+      background-image: 
+      linear-gradient(rgb(239, 240, 209,1), rgb(239, 240, 209,1)),
+      url("both_halves_mobile.jpeg");
+      background-repeat: 
+      no-repeat,
+      no-repeat;
+      background-position: 
+      center,
+      center; 
+      background-attachment:
+      fixed,
+      fixed;
+      background-size:
+      70% 100%,
+      100% 100%;
+      opacity:
+      1,
+      1;
+  }
+
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: 7.5% 7.5% 70% 7.5% 7.5%;
+    gap: 0px;
+  }
+
+  .min_width_elem{
+    min-width: 50%;
+  }
+
+  .grid-container > .grid-explain {
+    grid-row: 5;
+    grid-column: 3 / 4;
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid black;
+    text-align: center;
+    width: auto;
+    opacity: 0;
+
+  }
+
+  .centered_item{
+    max-width: 70vw;
+    padding-top: 20px;
+    margin: 1vh auto;
+  }
+
+}
+  

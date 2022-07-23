@@ -1,0 +1,87 @@
+.testimonial {
+  opacity: 0%;
+  animation: comein_right 0.3s ease 0s 1 forwards;
+}
+
+.testimonial blockquote {
+  margin: 10px 10px 0;
+  background: #262730;
+  padding: 20px 60px;
+  position: relative;
+  border: none;
+  border-radius: 8px;
+  font-style: italic;
+  color: #F18F01;
+}
+
+.testimonial blockquote:before,
+.testimonial blockquote:after {
+  content: "\201C";
+  position: absolute;
+  font-size: 80px;
+  line-height: 1;
+  color: #D7C0D0;
+  font-style: normal;
+}
+
+.testimonial blockquote:before {
+  top: 0;
+  left: 10px;
+}
+
+.testimonial blockquote:after {
+  content: "\201D";
+  right: 10px;
+  bottom: -0.5em;
+}
+
+.testimonial div {
+  width: 0;
+  height: 0;
+  border-left: 0 solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid #262730;
+  margin: 0 0 0 60px;
+}
+
+.testimonial p {
+  margin: 8px 0 0 20px;
+  text-align: left;
+  color: #262730;
+  
+}
+
+.pos_score {
+    color: #77BA99;
+    font-size: 1.2em;
+  }
+  
+.neg_score {
+  color: hsla(0, 89%, 62%, 0.905);
+  font-size: 1.2em;
+}
+
+#loading_bar {
+  position: absolute;
+  opacity: 1;
+  top: 80px;
+  right: 50vw;
+}
+
+@keyframes comein_right {
+  from {transform: translateX(3em);
+      opacity: 0%}
+  to {
+      opacity: 100%}
+}
+
+  @media only screen and (max-width: 767px){
+    .testimonial blockquote {
+      font-size: 0.7em;
+    }
+
+    .testimonial h4 {
+      color: #77BA99;
+      font-size: 2em;
+    }
+  }

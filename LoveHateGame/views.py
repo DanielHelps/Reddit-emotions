@@ -3,6 +3,7 @@ from main.models import TrainData, TrainIps, ImportantVars
 from django.db.models import Q
 import time
 from .tasks import get_next_post_update
+import datetime
 
 global train_post, next_train_post, next_author, next_subreddit
 train_post = None
@@ -57,7 +58,12 @@ def train_emot_click(request, ip_str: str):
 def train(request):
     global train_post, next_train_post, next_author, next_subreddit
     ip_str = get_client_ip(request)
-    max_answers = ImportantVars.objects.get(purpose="max answers").value
+    try:
+        max_answers = ImportantVars.objects.get(purpose="max answers").value
+    except:
+        a = ImportantVars.objects.create(purpose="max answers", value=3, date = datetime.datetime.date(datetime.datetime.now()))
+        a.save()
+        max_answers = a.value
     
     if request.method == "POST":
         train_emot_click(request, ip_str)

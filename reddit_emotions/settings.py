@@ -17,8 +17,8 @@ from celery.schedules import crontab
 
 # Celery settings
 
-CELERY_BROKER_URL = 'rediss://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac3b68f225554b377d@ec2-52-50-219-146.eu-west-1.compute.amazonaws.com:7740'
-                     
+CELERY_BROKER_URL = os.environ['REDIS_URL']           
+          
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
 CELERY_ACCEPT_CONTENT = ['json']

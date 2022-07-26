@@ -1,0 +1,6 @@
+vader_lexicon
+twitter_samples
+stopwords
+names
+punkt
+averaged_perceptron_tagger

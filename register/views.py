@@ -14,5 +14,9 @@ def register(request):
         
     else:
         form = RegisterForm()
-    
-    return render(request, "register/register.html", {"form": form})
+    try:
+            print(request.META['HTTP_REFERER'])
+            referral = "here"
+    except:
+            referral = "other"
+    return render(request, "register/register.html", {"form": form, "referral": referral})

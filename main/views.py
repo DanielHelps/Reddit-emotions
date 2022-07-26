@@ -41,6 +41,11 @@ def get_training_data():
         
 
 def home(request):          
+        try:
+                print(request.META['HTTP_REFERER'])
+                referral = "here"
+        except:
+                referral = "other"
         if request.GET.get("search_but"):
                 # User pressed the calculate button
                 emot_search = Emotion_Search(request.GET)
@@ -50,7 +55,7 @@ def home(request):
                         if len(list(SearchQ.objects.filter(query=query))) > 0:
                                 last_search = list(SearchQ.objects.filter(query=query))[len(list(SearchQ.objects.filter(query=query)))-2] 
                                 sentences = get_pos_neg_sens(last_search)
-                                return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : last_search.score, "sentences" : sentences})
+                                return render(request, "main/emotion_check.html", {"emot_search": emot_search, "score" : last_search.score, "sentences" : sentences, "referral": referral})
                         else:
                                 # Create a Search Query object
                                 t = SearchQ(query=query)
@@ -62,11 +67,7 @@ def home(request):
                         return HttpResponse("Problem, go back!")
         else:
                 # User just entered the page
-                try:
-                        print(request.META['HTTP_REFERER'])
-                        referral = "here"
-                except:
-                        referral = "other"
+                
                 emot_search = Emotion_Search()
                 return render(request, "main/home.html", {"emot_search": emot_search, "referral": referral})
                 
@@ -87,8 +88,12 @@ def emotion_check_view(request, query, id):
         
         search_obj.save()
         sentences = get_pos_neg_sens(search_obj)
-
-        return render(request, "main/emotion_check.html", {"query": query, "emot_search": emot_search, "score" : score, "sentences" : sentences})
+        try:
+                print(request.META['HTTP_REFERER'])
+                referral = "here"
+        except:
+                referral = "other"
+        return render(request, "main/emotion_check.html", {"query": query, "emot_search": emot_search, "score" : score, "sentences" : sentences, "referral": referral})
         
         
 
@@ -99,7 +104,12 @@ def search_requests(request):
         rev_searches = list(searches)
         # Reverse in order to show from latest to 
         rev_searches.reverse()
-        return render(request, "main/search_requests.html", {"searches": rev_searches, "username": request.user.username, "logged_in" : request.user.is_authenticated})
+        try:
+                print(request.META['HTTP_REFERER'])
+                referral = "here"
+        except:
+                referral = "other"
+        return render(request, "main/search_requests.html", {"searches": rev_searches, "username": request.user.username, "logged_in" : request.user.is_authenticated, "referral": referral})
 
         
         

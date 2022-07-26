@@ -99,12 +99,19 @@ body{
     animation: appearing 0.8s ease 0.2s 1 forwards;
 }
 
-#navbar{
+#navbar_other{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     width: 100%;
     animation: comein_down 0.3s ease 0s 1 forwards;
+}
+
+#navbar_here{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
 }
 
 #search_bar{

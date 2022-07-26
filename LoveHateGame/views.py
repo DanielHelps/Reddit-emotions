@@ -94,6 +94,12 @@ def train(request):
     if request.method == "POST":
         train_post, author, subreddit = next_post.post_title, next_post.author, next_post.subreddit
 
-    return render(request, "LoveHateGame/train.html", {"post_title": train_post, "author":author, "subreddit":subreddit})
+    try:
+        print(request.META['HTTP_REFERER'])
+        referral = "here"
+    except:
+        referral = "other"
+                        
+    return render(request, "LoveHateGame/train.html", {"post_title": train_post, "author":author, "subreddit":subreddit, "referral":referral})
         
     

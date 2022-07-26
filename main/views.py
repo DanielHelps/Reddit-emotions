@@ -64,11 +64,11 @@ def home(request):
                 # User just entered the page
                 try:
                         print(request.META['HTTP_REFERER'])
-                        
+                        referral = "here"
                 except:
                         referral = "other"
                 emot_search = Emotion_Search()
-                return render(request, "main/home.html", {"emot_search": emot_search})
+                return render(request, "main/home.html", {"emot_search": emot_search, "referral": referral})
                 
 
 

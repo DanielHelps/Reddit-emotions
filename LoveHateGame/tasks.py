@@ -8,9 +8,10 @@ from main.models import TrainData, TrainIps, ImportantVars
 from django.db.models import Q
 from main.classifier_functions import main_training
 from .train import top_searches_train
+import os
 
-
-app = Celery('tasks', broker='redis://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac3b68f225554b377d@ec2-52-50-219-146.eu-west-1.compute.amazonaws.com:7740')
+# app = Celery('tasks', broker='rediss://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac3b68f225554b377d@ec2-52-50-219-146.eu-west-1.compute.amazonaws.com:7740')
+app = Celery('tasks', broker=os.environ['REDIS_URL'])
 
 def get_client_ip(x_forwarded_for: str, REMOTE_ADDR: str) -> str:
     """receives information from response and returns IP address of the computer 

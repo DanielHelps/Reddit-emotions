@@ -9,7 +9,6 @@ import datetime
 import re
 
 
-
 def get_pos_neg_sens(search: SearchQ):
         """Receives a search query and returns the most negative and most positive sentences
 
@@ -63,6 +62,11 @@ def home(request):
                         return HttpResponse("Problem, go back!")
         else:
                 # User just entered the page
+                try:
+                        print(request.META['HTTP_REFERER'])
+                        
+                except:
+                        referral = "other"
                 emot_search = Emotion_Search()
                 return render(request, "main/home.html", {"emot_search": emot_search})
                 

@@ -66,7 +66,7 @@ def get_next_post_update(x_forwarded_for: str, REMOTE_ADDR: str, current_train_p
         # - The post title is NOT the title of the current train post being displayed
         post = TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=current_train_post), times_answered__lt = max_answers)[1]
         print("1111111111111111111111")
-        print(post.post_title, post.author, post.subreddit)
+        # print(post.post_title, post.author, post.subreddit)
         return post.post_title, post.author, post.subreddit
     except: 
         #If next train post does not exist in database, create one by getting a random post from reddit and push it to database

@@ -9,7 +9,7 @@ import time
 import asyncio
 import aiohttp
 import operator
-
+import os
 
 def import_top_100() -> list:
     """Imports the top 100 negative and top 100 positive words
@@ -147,8 +147,8 @@ def get_oauth() -> dict:
 
     # Pass login method (password), username, and password
     data = {'grant_type': 'password',
-            'username': 'checking_sentiment',
-            'password': '8S(pM;,E]crQQ{9:'}
+            'username': os.environ['REDDIT_LOGIN_USERNAME'],
+            'password': os.environ['REDDIT_LOGIN_PASSWORD']}
 
 
     # Setup our header

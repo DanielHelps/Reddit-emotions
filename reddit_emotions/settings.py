@@ -194,7 +194,7 @@ django_on_heroku.settings(locals())
 
 CSRF_TRUSTED_ORIGINS = [
     'http://redditemotions.herokuapp.com',
-    'http://www.reddit-emotions.com/',
+    'http://www.reddit-emotions.com',
     'https://redditemotions.herokuapp.com',
-    'https://www.reddit-emotions.com/'
+    'https://www.reddit-emotions.com'
 ]

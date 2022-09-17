@@ -10,7 +10,7 @@ from main.classifier_functions import main_training
 from .train import top_searches_train
 import os
 
-# app = Celery('tasks', broker='rediss://:pba041f448e29eb5ae3008eb717539810314741333e3b7fac3b68f225554b377d@ec2-52-50-219-146.eu-west-1.compute.amazonaws.com:7740')
+# app = Celery('tasks', broker='rediss://:p9fbece7c880409dd7caea59b72470c1e589d106ef280492efe3a7c544bdc3244@ec2-34-251-208-252.eu-west-1.compute.amazonaws.com:27030')
 app = Celery('tasks', broker=os.environ['REDIS_URL'])
 
 def get_client_ip(x_forwarded_for: str, REMOTE_ADDR: str) -> str:
@@ -65,6 +65,7 @@ def get_next_post_update(x_forwarded_for: str, REMOTE_ADDR: str, current_train_p
         # - The post was answered less than "max_answers" amount of times (default 3)
         # - The post title is NOT the title of the current train post being displayed
         post = TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=current_train_post), times_answered__lt = max_answers)[1]
+        # post = TrainData.objects.filter(~Q(train_ips=ip_obj),~Q(post_title=current_train_post), times_answered__lt = max_answers)[0]
         print("1111111111111111111111")
         # print(post.post_title, post.author, post.subreddit)
         return post.post_title, post.author, post.subreddit

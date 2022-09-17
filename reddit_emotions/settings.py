@@ -18,7 +18,8 @@ from celery.schedules import crontab
 # Celery settings
 
 CELERY_BROKER_URL = os.environ.get('REDIS_URL')
-          
+
+
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
 CELERY_ACCEPT_CONTENT = ['json']
@@ -52,7 +53,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: don't run with debug turned on in production!!!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -193,5 +194,5 @@ django_on_heroku.settings(locals())
 
 CSRF_TRUSTED_ORIGINS = [
     'https://redditemotions.herokuapp.com',
-    'http://www.reddit-emotions.com/'
+    'https://www.reddit-emotions.com/'
 ]

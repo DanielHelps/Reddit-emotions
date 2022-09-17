@@ -17,7 +17,7 @@ from celery.schedules import crontab
 
 # Celery settings
 
-CELERY_BROKER_URL = os.environ['REDIS_URL']           
+CELERY_BROKER_URL = os.environ.get('REDIS_URL')
           
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
@@ -52,7 +52,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: don't run with debug turned on in production!!!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 

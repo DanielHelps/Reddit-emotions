@@ -1,4 +1,4 @@
-from pytrends.request import TrendReq
+# from pytrends.request import TrendReq
 from main.models import SearchQ, Classifier, ImportantVars, Sentence
 import datetime
 from main import emotion_check

@@ -10,8 +10,8 @@ from main.classifier_functions import main_training
 from .train import top_searches_train
 import os
 
-# app = Celery('tasks', broker='rediss://:p9fbece7c880409dd7caea59b72470c1e589d106ef280492efe3a7c544bdc3244@ec2-34-251-208-252.eu-west-1.compute.amazonaws.com:27030')
-app = Celery('tasks', broker=os.environ['REDIS_URL'])
+app = Celery('tasks', broker='rediss://:p9fbece7c880409dd7caea59b72470c1e589d106ef280492efe3a7c544bdc3244@ec2-34-251-208-252.eu-west-1.compute.amazonaws.com:27030')
+# app = Celery('tasks', broker=os.environ['REDIS_URL'])
 
 def get_client_ip(x_forwarded_for: str, REMOTE_ADDR: str) -> str:
     """receives information from response and returns IP address of the computer 

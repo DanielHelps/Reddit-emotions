@@ -53,7 +53,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: don't run with debug turned on in production!!!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -193,6 +193,8 @@ import django_on_heroku
 django_on_heroku.settings(locals())
 
 CSRF_TRUSTED_ORIGINS = [
+    'http://redditemotions.herokuapp.com',
+    'http://www.reddit-emotions.com/',
     'https://redditemotions.herokuapp.com',
     'https://www.reddit-emotions.com/'
 ]

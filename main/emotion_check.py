@@ -189,8 +189,8 @@ async def by_aiohttp_concurrency(total: int, search_query: str, current_time: in
     tasks = []
     # Add a different time range to search in each API call and create a task for it
     for i in range(total):
-        start_time = (current_time-3*(i+1)*month_time)
-        end_time = (current_time-3*(i)*month_time)
+        start_time = (current_time-6*(i+1)*month_time)
+        end_time = (current_time-6*(i)*month_time)
         params = {"limit":100,"sort":"score", "sort_type":"score", "title":search_query, "before":end_time, "after":start_time}
         # params.update({"before":end_time, "after":start_time})
         tasks.append(asyncio.create_task(fetch(session, params)))
@@ -227,7 +227,7 @@ def main_check(search_query: str) -> tuple:
         results = []
         # Create parameters for the pushshift API call
         parameters = {"limit":100,"sort":"score", "sort_type":"score", "title":search_query}
-        total = 10 # Total amount of times to call the API
+        total = 5 # Total amount of times to call the API
         # Get results from "total" number of API calls
         results = asyncio.run(by_aiohttp_concurrency(total, search_query, current_time, month_seconds))
 

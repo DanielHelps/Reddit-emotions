@@ -2,7 +2,7 @@
 
 # Reddit-emotions
 ## What is this repository?
-This repository is the code for (**link** - deployment SOON!). 
+This repository is the code for https://www.reddit-emotions.com. 
 
 This web app checks reddit for a search term and gives an aggregated positivity score for the posts received contatining the search term.
 
